@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Source_Sans_3 } from "next/font/google";
+import localFont from "next/font/local";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Motion } from "@/components/Motion";
@@ -9,18 +9,26 @@ import { businessSchema } from "@/lib/schema";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-const fraunces = Fraunces({
+// Self-hosted Slovenian subsets (see src/fonts/README.md): three files, 129 KB in total, all preloaded.
+const fraunces = localFont({
+  src: [{ path: "../fonts/fraunces-roman.woff2", weight: "300 700", style: "normal" }],
   variable: "--font-fraunces",
-  subsets: ["latin", "latin-ext"],
-  style: ["normal", "italic"],
-  axes: ["SOFT", "opsz"],
   display: "swap",
+  fallback: ["ui-serif", "Georgia", "serif"],
 });
 
-const source = Source_Sans_3({
-  variable: "--font-source",
-  subsets: ["latin", "latin-ext"],
+const frauncesItalic = localFont({
+  src: [{ path: "../fonts/fraunces-italic.woff2", weight: "300 700", style: "italic" }],
+  variable: "--font-fraunces-italic",
   display: "swap",
+  fallback: ["ui-serif", "Georgia", "serif"],
+});
+
+const source = localFont({
+  src: [{ path: "../fonts/vidovic-sans.woff2", weight: "400 700", style: "normal" }],
+  variable: "--font-source",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
 const live = process.env.NEXT_PUBLIC_SITE_LIVE === "1";
@@ -40,7 +48,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="sl" className={`${fraunces.variable} ${source.variable} antialiased`}>
+    <html lang="sl" className={`${fraunces.variable} ${frauncesItalic.variable} ${source.variable} antialiased`}>
       <body className="min-h-dvh">
         <a
           href="#vsebina"

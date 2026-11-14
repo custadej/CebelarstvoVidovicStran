@@ -96,7 +96,8 @@ for (const [slug, src, crop] of sources) {
     height = region.height;
   }
   const base = await img.toBuffer();
-  const widths = [...new Set([...STEPS.filter((w) => w < width), Math.min(width, 2000)])].sort((a, b) => a - b);
+  const cap = slug.startsWith("priznanj") || slug.startsWith("odlikovanje") || slug.startsWith("znak") || slug.startsWith("medalja") ? 1200 : 2000;
+  const widths = [...new Set([...STEPS.filter((w) => w < width && w <= cap), Math.min(width, cap)])].sort((a, b) => a - b);
   for (const w of widths) {
     const resized = sharp(base).resize({ width: w, withoutEnlargement: true });
     await resized.clone().avif({ quality: 52, effort: 5 }).toFile(path.join(OUT, `${slug}-${w}.avif`));
@@ -104,8 +105,8 @@ for (const [slug, src, crop] of sources) {
   }
   const blur = await sharp(base).resize({ width: 20 }).webp({ quality: 40 }).toBuffer();
   manifest[slug] = {
-    width: Math.min(width, 2000),
-    height: Math.round((Math.min(width, 2000) / width) * height),
+    width: Math.min(width, cap),
+    height: Math.round((Math.min(width, cap) / width) * height),
     widths,
     blur: `data:image/webp;base64,${blur.toString("base64")}`,
   };
@@ -116,7 +117,8 @@ await writeFile("src/data/images.json", `${JSON.stringify(manifest, null, 1)}\n`
 
 // Logo (unchanged artwork) + icons cropped from the bee mark
 await sharp(`${OLD}/Logo.png`).png({ compressionLevel: 9 }).toFile(`${OUT}/logo.png`);
-await sharp(`${OLD}/Logo.png`).webp({ lossless: true }).toFile(`${OUT}/logo.webp`);
+await sharp(`${OLD}/Logo.png`).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/logo.webp`);
+await sharp(`${OLD}/Logo.png`).resize({ width: 250 }).webp({ quality: 88, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/logo-250.webp`);
 const bee = sharp(`${OLD}/Logo.png`).extract({ left: 14, top: 8, width: 134, height: 200 });
 const beeBuf = await bee.png().toBuffer();
 const square = (size, pad, bg) =>

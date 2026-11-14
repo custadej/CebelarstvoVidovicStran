@@ -516,36 +516,32 @@
   "blur": "data:image/webp;base64,UklGRsAAAABXRUJQVlA4ILQAAADwBQCdASoUABsAPu1grFAppSQisBgIATAdiWMAql8uqqJvdNaW5URlOanDpaE2q5Vg7cx+hWCUGAD+6fcrh6ZVnUQS/sG2P+v1lbGliUhABzkbU6htSMgeIg/AcQOzvx06ye+kfM8EIiz9nc2YOz9EZnvBL8H9Z81Wtzp+d9GIvoWeVgVYBvWrLFpmkiiRuGSwhOnlxqo8LpTzb04OBMB5x2ekJCA71PI3Wz4s3BibN6YAAAA="
  },
  "priznanja-agra-2024": {
-  "width": 1279,
-  "height": 720,
+  "width": 1200,
+  "height": 676,
   "widths": [
    480,
    800,
-   1200,
-   1279
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwDE2BuvR3ZOlIypXsIAAOJBSljzaRfFBmh55w9xFmhD2RhLi2VlCtkvKvysHvLp7dBLh8T8cBSJBb5H8QByGnAAAA=="
  },
  "priznanja-agra-2022": {
-  "width": 1283,
-  "height": 960,
+  "width": 1200,
+  "height": 898,
   "widths": [
    480,
    800,
-   1200,
-   1283
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBACdASoUAA8APu1iqU2ppaQiMAgBMB2JZQCdMoS9AA+kH7VMqttpbkdQAP5BKZABcaYzATUe/bieFrhxE9dEaIyA7OAtnCj9dwANq8K84q+WUpy8hefl3mh7ljBoBHMP1tLPDAglt4zo0wiP+DmA1QAAAA=="
  },
  "priznanje-drzavni-prvak": {
-  "width": 2000,
-  "height": 2667,
+  "width": 1200,
+  "height": 1600,
   "widths": [
    480,
    800,
-   1200,
-   1600,
-   2000
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRqwAAABXRUJQVlA4IKAAAAAQBQCdASoUABsAPu1mqk2ppaQiMAgBMB2JYwCsACP8whF/pFD8axtP5bw2jTu9O7MqAP7F/9F7ObInUCyRKaB5m2xwS5mldWElFAluDXZaHt9NTMVfJb9WLz5UEGZf/0q6g9zhaSGMbv5/qukQ4YdH/4QjULkSJj6ldAJUyjy7qjrqR/dm2ibpZxHOAOc9EH8fmpEBE0uTsHj0YJqPMAAA"
  },
@@ -570,25 +566,22 @@
   "blur": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAACQBACdASoUAB4APuFaqU2opSQiMAwBEBwJbACsL3+BcuCm8gRClmsba5hNgAAAysj+O8RzBv7rVWMPnrBzeBFH09UQOKX1Ev7G7Pc9JRWCEVr06ma/rAsAU/Nmz1z1ha5LbwuaWQEjp+WY8OtAl4y8ylArG5PnDbCfNP8j7XCR3+yoCEzDGUvsaIyK78ow4vx4wAAA"
  },
  "odlikovanje-jansa": {
-  "width": 1500,
-  "height": 1995,
+  "width": 1200,
+  "height": 1596,
   "widths": [
    480,
    800,
-   1200,
-   1500
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAACQBACdASoUABsAPuVepU2pJSOiMAwBIByJYwC0+f/gD7Z/kpy2/5uCnCv7cmgA/MsMX0JNBCE/yTFmBykGxkWkY64sJQHUPMnUnGcasN2INRKiDgThPaQLPy1eFN7a7yW13mcwhP+6rLUuzE1U7VqzRXvFACyQsaxaAHKzbWVvzgJ2Bx2Ucm1ZiSYXQNAB1s4gAA=="
  },
  "priznanje-agra-2020": {
-  "width": 2000,
-  "height": 3498,
+  "width": 1200,
+  "height": 2099,
   "widths": [
    480,
    800,
-   1200,
-   1600,
-   2000
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAADQAwCdASoUACMAPu1iqE2ppaOiMAgBMB2JZQAACCLC5hOOPcifHCAAyq8biDFbDX49MdifS4Sway2l0QPRW0gGhNCmg+C9XeKu6fnR+dDrp4zlparpZqpCcfd0iCLkF7lXZH1QAAA="
  },
@@ -602,48 +595,42 @@
   "blur": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBQCdASoUABsAPulgok2pJaMiMAwBIB0JYgC7AB6VJcjO6kCRkesIo4ADX7ZArnfDQAD+6pVW2JBbhc7PYAlg3GWrmiA+X1aRPVQ4157deD5LQpOKcdECRCHJI0ixKDR0WwFThS6ra8MjDLHAAA=="
  },
  "priznanje-dsk-2020": {
-  "width": 2000,
-  "height": 2915,
+  "width": 1200,
+  "height": 1749,
   "widths": [
    480,
    800,
-   1200,
-   1600,
-   2000
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAwCdASoUAB0APu1qr1CppaQiqAqpMB2JZwDE2GXzX7urPeGGuYAAAP0r5augZyf+5FTNTbGnfxWLMjJMwBDOpxDwx8x0uKYNeWGVO1xOXJDa1Z1LNk+QYB8LyN0AAAA="
  },
  "priznanja-dsk-2019": {
-  "width": 1924,
-  "height": 1336,
+  "width": 1200,
+  "height": 833,
   "widths": [
    480,
    800,
-   1200,
-   1600,
-   1924
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAABQAwCdASoUAA4APu1iqU2ppaOiMAgBMB2JYwC06AMVc24AAAD9E32qUbm27WTckS0ySxqKJR93mNqRnD4TvPzG7PuAAA=="
  },
  "priznanje-agra-2018": {
-  "width": 1222,
-  "height": 2182,
+  "width": 1200,
+  "height": 2143,
   "widths": [
    480,
    800,
-   1200,
-   1222
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAACQBACdASoUACQAPu1iqE2ppaOiMAgBMB2JYwDL4DBzWf7xdQZtp0KcNkXSPgAA/uKx5yyeI35Hka0gINg1NHetuh/mJkFRNTspUn7Xg3RPTWmpKNnieRLNUmOlS9y4rxZDKdRDWP2SC8aSU49E5hkayouPmFx7Y10zgAAA"
  },
  "priznanja-dsk-2018": {
-  "width": 1600,
-  "height": 1057,
+  "width": 1200,
+  "height": 793,
   "widths": [
    480,
    800,
-   1200,
-   1600
+   1200
   ],
   "blur": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAwAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JYwCdAC0JwDI4AP7hbw6zLgxZ0gPdIB6Ouyyhb+4GBxmdk3ECl+e7GdiE+grAAAA="
  },

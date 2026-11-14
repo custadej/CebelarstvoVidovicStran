@@ -9,7 +9,7 @@ export function Header() {
       <div className="mx-auto flex h-[var(--header-h)] max-w-[1280px] items-center justify-between gap-3 rounded-full bg-papir/95 pr-2 pl-4 shadow-[0_10px_40px_-18px_rgb(31_23_17/0.6)] backdrop-blur md:pl-6">
         <Link href="/" aria-label={`${site.name}, na začetno stran`} className="flex h-full items-center">
           <picture>
-            <source srcSet="/img/logo.webp" type="image/webp" />
+            <source srcSet="/img/logo-250.webp 250w, /img/logo.webp 497w" sizes="110px" type="image/webp" />
             <img src="/img/logo.png" alt={site.name} width={497} height={223} className="h-10 w-auto md:h-12" />
           </picture>
         </Link>

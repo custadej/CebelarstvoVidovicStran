@@ -9,7 +9,8 @@ export function Footer() {
       <div className="wrap grid gap-12 py-16 md:grid-cols-[1.2fr_1fr_1fr] md:py-20">
         <div>
           <div className="inline-block rounded-2xl bg-papir px-4 py-3">
-            <img src="/img/logo.png" alt={site.name} width={497} height={223} loading="lazy" className="h-14 w-auto" />
+            {/* eslint-disable-next-line @next/next/no-img-element -- static export: images are pre-optimised by scripts/images.mjs */}
+            <img src="/img/logo.webp" alt={site.name} width={497} height={223} loading="lazy" className="h-14 w-auto" />
           </div>
           <p className="display mt-6 text-[1.75rem] leading-tight">
             <em>„{site.tagline}“</em>

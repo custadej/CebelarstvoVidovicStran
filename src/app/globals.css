@@ -18,6 +18,7 @@
   --color-panj-rdeca: #c8402f;
   --color-panj-oranzna: #e57a1c;
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-display-italic: var(--font-fraunces-italic), var(--font-fraunces), ui-serif, Georgia, serif;
   --font-sans: var(--font-source), ui-sans-serif, system-ui, sans-serif;
   --ease-ui: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-story: cubic-bezier(0.16, 1, 0.3, 1);
@@ -97,7 +98,6 @@ body {
 .display {
   font-family: var(--font-display);
   font-weight: 400;
-  font-variation-settings: "SOFT" 70, "opsz" 144;
   line-height: 0.98;
   letter-spacing: -0.02em;
   text-wrap: balance;
@@ -114,15 +114,14 @@ body {
 }
 .h-card {
   font-family: var(--font-display);
-  font-variation-settings: "SOFT" 60, "opsz" 48;
   font-size: clamp(1.5rem, 4.6vw, 2rem);
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
 .display em,
 .h-card em {
+  font-family: var(--font-display-italic);
   font-style: italic;
-  font-variation-settings: "SOFT" 100, "opsz" 144;
   color: var(--color-kostanj);
 }
 .on-dark .display em,
@@ -160,7 +159,7 @@ body {
 
 .num {
   font-family: var(--font-display);
-  font-variation-settings: "SOFT" 40, "opsz" 96;
+  font-optical-sizing: auto;
   font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
@@ -222,7 +221,6 @@ body {
 }
 .btn .tel {
   font-family: var(--font-display);
-  font-variation-settings: "SOFT" 40, "opsz" 36;
   font-weight: 600;
   font-size: 1.15em;
   letter-spacing: 0.01em;
@@ -399,7 +397,6 @@ details.faq summary {
   cursor: pointer;
   list-style: none;
   font-family: var(--font-display);
-  font-variation-settings: "SOFT" 60, "opsz" 36;
   font-size: clamp(1.25rem, 4vw, 1.5rem);
   line-height: 1.25;
 }
@@ -551,7 +548,6 @@ html.lenis body {
 /* legal pages */
 .legal h2 {
   font-family: var(--font-display);
-  font-variation-settings: "SOFT" 60, "opsz" 36;
   font-size: 1.6rem;
   line-height: 1.2;
   margin-top: 2.5rem;
