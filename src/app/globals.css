@@ -42,11 +42,6 @@ html {
   scroll-padding-top: calc(var(--header-h) + 24px);
   -webkit-text-size-adjust: 100%;
 }
-@media (prefers-reduced-motion: no-preference) {
-  html:not(.lenis) {
-    scroll-behavior: smooth;
-  }
-}
 
 body {
   font-family: var(--font-sans);
@@ -497,12 +492,6 @@ details.faq .answer {
   opacity: 0;
 }
 
-/* sticky call bar spacing on phones */
-@media (max-width: 767px) {
-  body {
-    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom));
-  }
-}
 
 
 /* SplitText line masks: room for č, š, ž carons and descenders at tight leading */

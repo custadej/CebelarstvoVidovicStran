@@ -31,19 +31,18 @@ export function Motion() {
       root.classList.add("motion");
       undo.push(() => root.classList.remove("motion"));
 
-      if (fine) {
+      if (fine && !window.__lenis) {
+        // One Lenis for the lifetime of the app. Recreating it per route left a gap in which the page
+        // could be scrolled by something else; ScrollManager resets it on navigation instead.
         const { default: Lenis } = await import("lenis");
         if (cancelled) return;
         const lenis = new Lenis({ anchors: true, lerp: 0.11 });
         lenis.on("scroll", ScrollTrigger.update);
-        const tick = (time: number) => lenis.raf(time * 1000);
-        gsap.ticker.add(tick);
+        gsap.ticker.add((time: number) => lenis.raf(time * 1000));
         gsap.ticker.lagSmoothing(0);
-        undo.push(() => {
-          gsap.ticker.remove(tick);
-          lenis.destroy();
-        });
+        window.__lenis = lenis;
       }
+      window.__lenis?.resize?.();
 
       const ctx = gsap.context(() => {
         // Headings: line-by-line mask reveal

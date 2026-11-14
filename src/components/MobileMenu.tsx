@@ -9,6 +9,13 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  // Any route change closes the menu, whichever link caused it.
+  const [seen, setSeen] = useState(pathname);
+  if (seen !== pathname) {
+    setSeen(pathname);
+    setOpen(false);
+  }
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {

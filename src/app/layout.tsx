@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Motion } from "@/components/Motion";
-import { StickyCall } from "@/components/StickyCall";
+import { ScrollManager } from "@/components/ScrollManager";
 import { JsonLd } from "@/components/ui";
 import { businessSchema } from "@/lib/schema";
 import { site } from "@/lib/site";
@@ -59,7 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main id="vsebina">{children}</main>
         <Footer />
-        <StickyCall />
+        <ScrollManager />
         <Motion />
         <JsonLd data={businessSchema} />
       </body>
