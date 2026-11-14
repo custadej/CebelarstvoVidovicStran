@@ -37,9 +37,6 @@ const sources = [
   ["tocenje-medu", `${FB}/fb-058.jpg`],
   ["med-na-kruhu", `${FB}/fb-105.jpg`],
   ["sat-med", `${FB}/fb-083.jpg`],
-  ["cebele-satje", `${FB}/fb-081.jpg`],
-  // supplied by Tadej 2026-11-14 as a hero candidate; provenance to be confirmed before launch
-  ["hero-matica-satje", "assets/original/tadej/hero-matica-na-satju.png"],
   ["cebela-regrat", `${FB}/fb-143.jpg`],
   ["cebela-travnik", `${FB}/fb-112.jpg`],
   ["cebela-lipa", `${FB}/fb-067.jpg`],

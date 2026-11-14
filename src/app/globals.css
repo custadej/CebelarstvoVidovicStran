@@ -764,16 +764,3 @@ html.lenis body {
     }
   }
 }
-
-/* TEMPORARY hero photo switch (remove with HeroPhotoSwitch.tsx) */
-@layer components {
-  [data-hero-choice="1"] [data-hero]:not([data-hero="1"]),
-  [data-hero-choice="2"] [data-hero]:not([data-hero="2"]),
-  [data-hero-choice="3"] [data-hero]:not([data-hero="3"]) {
-    display: none;
-  }
-  [data-hero-choice="2"] [data-hero="2"],
-  [data-hero-choice="3"] [data-hero="3"] {
-    display: block;
-  }
-}
