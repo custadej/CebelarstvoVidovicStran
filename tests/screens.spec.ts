@@ -4,7 +4,7 @@ import { test } from "@playwright/test";
 // Narrow a run with env vars: ROUTES="/,/matice/" WIDTHS="390,1280" npm run screens
 const allRoutes = ["/", "/matice/", "/med/", "/med/cvetlicni/", "/cebelji-pridelki/", "/o-nas/", "/priznanja/", "/kontakt/", "/zasebnost/"];
 const routes: readonly string[] = process.env.ROUTES ? process.env.ROUTES.split(",") : allRoutes;
-const widths: readonly number[] = process.env.WIDTHS ? process.env.WIDTHS.split(",").map(Number) : [360, 390, 768, 1280, 1536];
+const widths: readonly number[] = process.env.WIDTHS ? process.env.WIDTHS.split(",").map(Number) : [390, 768, 1280, 1440, 1920];
 const reduced = process.env.REDUCED === "1";
 
 for (const route of routes) {

@@ -1,47 +1,37 @@
 import { HoneyThread } from "@/components/HoneyThread";
 import { Awards } from "@/components/sections/Awards";
 import { Contact } from "@/components/sections/Contact";
-import { Faq } from "@/components/sections/Faq";
 import { Hero } from "@/components/sections/Hero";
 import { Honeys } from "@/components/sections/Honeys";
 import { Products } from "@/components/sections/Products";
-import { Queens } from "@/components/sections/Queens";
-import { Reviews } from "@/components/sections/Reviews";
+import { QueenBanner } from "@/components/sections/QueenBanner";
 import { Story } from "@/components/sections/Story";
-import { Trust } from "@/components/sections/Trust";
-import { Where } from "@/components/sections/Where";
-import { JsonLd } from "@/components/ui";
 import { pageMeta } from "@/lib/meta";
-import { faqSchema } from "@/lib/schema";
 
 export const metadata = {
   ...pageMeta({
-    title: "Čebelarstvo Vidovič | Med in matice iz Haloz",
+    title: "Čebelarstvo Vidovič | Domač med iz Haloz in matice čebel",
     description:
-      "Čebelarstvo Vidovič, Apače pri Kidričevem: oplojene in označene matice kranjske čebele, tudi po pošti, ter nagrajeni med iz Haloz. Državni prvak 2019. Pokličite Jožeta: 041 579 827.",
+      "Čebelarstvo Vidovič, Apače pri Kidričevem: domač med iz Haloz (cvetlični, akacijev, lipov, kostanjev, gozdni), državni prvak 2019, ter oplojene matice kranjske čebele, tudi po pošti. Pokličite Jožeta: 041 579 827.",
     path: "/",
   }),
-  title: { absolute: "Čebelarstvo Vidovič | Med in matice iz Haloz" },
+  title: { absolute: "Čebelarstvo Vidovič | Domač med iz Haloz in matice čebel" },
 };
 
+// Customer first: what we sell (med), the one door for beekeepers (matice), what else, why trust us, who we are, how to reach us.
 export default function Home() {
   return (
     <>
       <Hero />
-      <Trust />
       <div className="relative" data-thread-root="">
         <HoneyThread />
-        <Queens />
         <Honeys />
+        <QueenBanner />
         <Products />
-        <Story />
         <Awards />
-        <Reviews />
-        <Where />
-        <Faq />
+        <Story />
         <Contact />
       </div>
-      <JsonLd data={faqSchema()} />
     </>
   );
 }

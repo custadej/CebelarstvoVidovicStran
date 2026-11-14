@@ -3,46 +3,88 @@ import { Photo } from "@/components/Photo";
 import { Arrow, CallButton } from "@/components/ui";
 import { site } from "@/lib/site";
 
+// Honey first. The photo is shown framed (never wider than ~680 px) so the 1456 px source stays sharp on retina.
+// To try another photo, change `slug` below to any key from src/data/images.json (candidates: vault/attachments/hero-kandidati.jpg).
+const heroPhoto = {
+  slug: "medovi-pet",
+  alt: "Pet kozarcev medu Čebelarstva Vidovič v vrsti: kostanjev, gozdni, lipov, cvetlični in akacijev",
+} as const;
+
+const trust = [
+  { big: "15+", label: "zlatih medalj in priznanj za med" },
+  { big: "2019", label: "državni prvak za cvetlični med" },
+  { big: "1998", label: "čebelarim od takrat, pomagajo domači" },
+  { big: "4,9", label: "ocena na Googlu, 20 mnenj", href: site.googleProfile },
+];
+
 export function Hero() {
+  const s = (i: number) => ({ "--i": i }) as React.CSSProperties;
   return (
     <section className="on-dark relative overflow-hidden bg-smola">
-      <div className="relative h-[58svh] min-h-[400px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[60%]">
-        <Photo
-          slug="haloze-cebelnjak"
-          alt="Pisan prevozni čebelnjak Čebelarstva Vidovič na travniku med haloškimi griči"
-          sizes="(min-width: 1024px) 60vw, 100vw"
-          priority
-          className="unveil h-full w-full"
-          position="46% 82%"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-smola via-transparent to-smola/40 lg:bg-gradient-to-r lg:from-smola lg:via-smola/35 lg:to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 hidden h-1/3 bg-gradient-to-t from-smola to-transparent lg:block" />
+      <div className="wrap grid gap-8 pt-[calc(var(--header-h)+2.25rem)] pb-10 lg:grid-cols-[1.02fr_1fr] lg:items-center lg:gap-14 lg:pt-[calc(var(--header-h)+4.5rem)] lg:pb-14">
+        <div>
+          <p className="eyebrow rise" style={s(0)}>
+            {site.name} · Apače pri Kidričevem
+          </p>
+          <h1 className="display mt-4 text-[clamp(3rem,12.5vw,6.25rem)] whitespace-nowrap">
+            <span className="rise block" style={s(1)}>
+              Domač med
+            </span>
+            <span className="rise block" style={s(2)}>
+              <em>iz Haloz.</em>
+            </span>
+          </h1>
+          <p className="lead rise mt-6 max-w-[32ch]" style={s(3)}>
+            Šest vrst medu iz naših čebelnjakov. Cvetlični je bil leta 2019 državni prvak.
+          </p>
+          <div className="rise mt-8 flex flex-col gap-3 whitespace-nowrap sm:flex-row sm:flex-wrap sm:items-center" style={s(4)}>
+            <CallButton magnetic />
+            <a href="#med" className="btn btn-ghost">
+              Poglejte med <Arrow />
+            </a>
+          </div>
+          <p className="rise mt-5 text-[1.0625rem]" style={s(5)}>
+            Ste čebelar?{" "}
+            <Link href="/matice/" className="link font-bold text-akacija">
+              Matice čebel
+            </Link>
+          </p>
+        </div>
+
+        <div className="relative order-first lg:order-none">
+          <Photo
+            slug={heroPhoto.slug}
+            alt={heroPhoto.alt}
+            sizes="(min-width: 1280px) 600px, (min-width: 1024px) 48vw, 92vw"
+            priority
+            className="unveil aspect-[3/2] w-full rounded-[1.75rem]"
+          />
+          <p className="absolute -bottom-4 left-4 flex items-center gap-3 rounded-full bg-med py-2 pr-5 pl-2 text-[0.95rem] leading-tight font-bold text-smola shadow-[0_18px_30px_-16px_rgb(0_0_0/0.7)] md:left-6">
+            <span aria-hidden="true" className="hex grid h-9 w-8 place-items-center bg-smola text-[0.7rem] text-akacija">
+              ★
+            </span>
+            Državni prvak 2019 · cvetlični med
+          </p>
+        </div>
       </div>
 
-      <div className="wrap relative -mt-16 pb-14 lg:mt-0 lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-end lg:pt-44 lg:pb-24">
-        <p className="eyebrow rise" style={{ "--i": 0 } as React.CSSProperties}>
-          {site.name} · Apače pri Kidričevem
-        </p>
-        <h1 className="display h-hero mt-5 max-w-[9ch]">
-          <span className="rise block" style={{ "--i": 1 } as React.CSSProperties}>
-            Med in
-          </span>
-          <span className="rise block" style={{ "--i": 2 } as React.CSSProperties}>
-            matice
-          </span>
-          <span className="rise block" style={{ "--i": 3 } as React.CSSProperties}>
-            <em>iz Haloz.</em>
-          </span>
-        </h1>
-        <p className="lead rise mt-7 max-w-[34ch]" style={{ "--i": 4 } as React.CSSProperties}>
-          Čebelarim od leta 1998. Med točim iz čebelnjakov v Halozah, matice vzrejam pod nadzorom Kmetijskega inštituta Slovenije.
-        </p>
-        <div className="rise mt-9 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ "--i": 5 } as React.CSSProperties}>
-          <CallButton magnetic />
-          <Link href="/matice/" className="btn btn-ghost">
-            Matice čebel <Arrow />
-          </Link>
-        </div>
+      <div className="wrap pb-10 lg:pb-12">
+        <ul className="grid grid-cols-2 gap-x-6 gap-y-5 border-t border-white/15 pt-6 lg:grid-cols-4" aria-label="Na kratko">
+          {trust.map((t) => (
+            <li key={t.big} className="flex flex-col gap-1.5 md:flex-row md:items-baseline md:gap-3">
+              <span className="num text-[clamp(1.9rem,6vw,2.4rem)] leading-none text-akacija">{t.big}</span>
+              <span className="max-w-[20ch] text-[0.95rem] leading-snug">
+                {t.href ? (
+                  <a href={t.href} target="_blank" rel="noopener noreferrer" className="link">
+                    {t.label}
+                  </a>
+                ) : (
+                  t.label
+                )}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

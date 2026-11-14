@@ -115,18 +115,22 @@ for (const [slug, src, crop] of sources) {
 
 await writeFile("src/data/images.json", `${JSON.stringify(manifest, null, 1)}\n`);
 
-// Logo (unchanged artwork) + icons cropped from the bee mark
-await sharp(`${OLD}/Logo.png`).png({ compressionLevel: 9 }).toFile(`${OUT}/logo.png`);
-await sharp(`${OLD}/Logo.png`).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/logo.webp`);
-await sharp(`${OLD}/Logo.png`).resize({ width: 250 }).webp({ quality: 88, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/logo-250.webp`);
-const bee = sharp(`${OLD}/Logo.png`).extract({ left: 14, top: 8, width: 134, height: 200 });
-const beeBuf = await bee.png().toBuffer();
-const square = (size, pad, bg) =>
+// Logo: cleaned master (shadow removed, trimmed) from scripts/logo-clean.py. Artwork itself is unchanged.
+const LOGO = "assets/derived/logo-clean.png";
+await sharp(LOGO).png({ compressionLevel: 9 }).toFile(`${OUT}/logo.png`);
+await sharp(LOGO).webp({ quality: 92, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/logo.webp`);
+await sharp(LOGO).resize({ width: 360 }).webp({ quality: 92, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/logo-360.webp`);
+const logoMeta = await sharp(LOGO).metadata();
+// wordmarkCenter: vertical centre of the "Čebelarstvo Vidovič" lettering as a fraction of the image height
+// (measured from the cleaned master). The header uses it to line the lettering up with the nav links.
+await writeFile("src/data/logo.json", `${JSON.stringify({ width: logoMeta.width, height: logoMeta.height, wordmarkCenter: 0.638 }, null, 1)}\n`);
+const beeBuf = await sharp(LOGO).extract({ left: 0, top: 0, width: 262, height: 370 }).resize({ height: 200 }).png().toBuffer();
+const square = (size, bg) =>
   sharp({ create: { width: size, height: size, channels: 4, background: bg } })
     .composite([{ input: beeBuf, gravity: "center" }])
     .png();
-await sharp(await square(240, 20, { r: 0, g: 0, b: 0, alpha: 0 }).toBuffer()).resize(96).png().toFile("src/app/icon.png");
-await sharp(await square(240, 20, { r: 246, g: 239, b: 223, alpha: 1 }).toBuffer()).resize(180).png().toFile("src/app/apple-icon.png");
+await sharp(await square(240, { r: 0, g: 0, b: 0, alpha: 0 }).toBuffer()).resize(96).png().toFile("src/app/icon.png");
+await sharp(await square(240, { r: 246, g: 239, b: 223, alpha: 1 }).toBuffer()).resize(180).png().toFile("src/app/apple-icon.png");
 
 // Open Graph image (1200x630): hero photo, dark gradient, name and line
 const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">

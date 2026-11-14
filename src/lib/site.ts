@@ -19,12 +19,14 @@ export const site = {
 } as const;
 
 export const nav = [
-  { href: "/matice/", label: "Matice" },
   { href: "/med/", label: "Med" },
   { href: "/cebelji-pridelki/", label: "Pridelki" },
   { href: "/o-nas/", label: "O nas" },
   { href: "/priznanja/", label: "Priznanja" },
   { href: "/kontakt/", label: "Kontakt" },
+  { href: "/matice/", label: "Matice čebel" },
 ] as const;
+
+export const credit = { name: "Tadej Čuš", href: "https://cus.si" } as const;
 
 export const formEnabled = process.env.NEXT_PUBLIC_FORM_ENABLED === "1";

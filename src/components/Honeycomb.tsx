@@ -1,10 +1,4 @@
-import Link from "next/link";
 import { HoneycombCanvas } from "@/components/HoneycombCanvas";
-import { honeys } from "@/data/content";
-
-// Light-to-dark order, the way the jars look on the shelf.
-const order = ["akacijev", "cvetlicni", "lipov", "kostanjev", "gozdni", "hojev"];
-const scale = order.map((slug) => honeys.find((h) => h.slug === slug)).filter((h) => h !== undefined);
 
 function hexPoints(cx: number, cy: number, r: number) {
   return Array.from({ length: 6 }, (_, i) => {
@@ -13,8 +7,8 @@ function hexPoints(cx: number, cy: number, r: number) {
   }).join(" ");
 }
 
-export function Honeycomb() {
-  const colors = scale.map((h) => h.color);
+// The honeycomb colour scale: SVG for everyone, replaced by the three.js canvas on wide screens with motion allowed.
+export function Honeycomb({ colors, className = "" }: { colors: string[]; className?: string }) {
   const R = 46;
   const w = Math.sqrt(3) * R;
   const cols = 9;
@@ -29,31 +23,22 @@ export function Honeycomb() {
   const height = 60 * 2 + (rows - 1) * 1.5 * R;
 
   return (
-    <div className="rounded-3xl bg-smola p-6 text-vosek md:p-10" data-reveal="">
-      <p className="eyebrow !text-akacija">Od akacije do hoje</p>
-      <p className="h-card mt-3 max-w-[24ch]">Barva pove, s katere paše je med.</p>
-      <div className="honeycomb relative mt-6 aspect-[5/2] w-full md:aspect-[3/1]">
-        <svg viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} className="honeycomb-svg absolute inset-0 h-full w-full" role="img" aria-label="Satnica, obarvana v odtenkih šestih vrst medu od svetlega akacijevega do temnega hojevega">
-          {cells.map((cell, i) => (
-            <g key={i}>
-              <polygon points={hexPoints(cell.x, cell.y, R - 2)} fill="#f0d9a0" />
-              <polygon points={hexPoints(cell.x, cell.y, R - 8)} fill={cell.color} />
-              <polygon points={hexPoints(cell.x - 6, cell.y - 8, R * 0.34)} fill="#fff" opacity="0.14" />
-            </g>
-          ))}
-        </svg>
-        <HoneycombCanvas colors={colors} />
-      </div>
-      <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3 lg:grid-cols-6">
-        {scale.map((h) => (
-          <li key={h.slug}>
-            <Link href={`/med/${h.slug}/`} className="flex min-h-11 items-center gap-2 font-semibold hover:text-akacija">
-              <span aria-hidden="true" className="hex h-4 w-4 flex-none" style={{ background: h.color, boxShadow: "inset 0 0 0 1px rgb(255 255 255 / .25)" }} />
-              {h.short}
-            </Link>
-          </li>
+    <div className={`honeycomb relative w-full ${className}`}>
+      <svg
+        viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`}
+        className="honeycomb-svg absolute inset-0 h-full w-full"
+        role="img"
+        aria-label="Satnica, obarvana v odtenkih šestih vrst medu od svetlega akacijevega do temnega hojevega"
+      >
+        {cells.map((cell, i) => (
+          <g key={i}>
+            <polygon points={hexPoints(cell.x, cell.y, R - 2)} fill="#f0d9a0" />
+            <polygon points={hexPoints(cell.x, cell.y, R - 8)} fill={cell.color} />
+            <polygon points={hexPoints(cell.x - 6, cell.y - 8, R * 0.34)} fill="#fff" opacity="0.14" />
+          </g>
         ))}
-      </ul>
+      </svg>
+      <HoneycombCanvas colors={colors} />
     </div>
   );
 }

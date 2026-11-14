@@ -5,7 +5,8 @@ import { FaqList } from "@/components/sections/Faq";
 import { KisResults, QueenFacts, QueenStory } from "@/components/sections/Queens";
 import { CallButton, JsonLd } from "@/components/ui";
 import { pageMeta } from "@/lib/meta";
-import { breadcrumbSchema, faqSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqSchema, queenSchema } from "@/lib/schema";
+import { site } from "@/lib/site";
 
 export const metadata = pageMeta({
   title: "Matice čebel: prodaja oplojenih in označenih matic",
@@ -47,7 +48,32 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="section on-dark bg-hoja !pt-0">
+      <section className="section" aria-labelledby="kako-narocite">
+        <div className="wrap">
+          <p className="eyebrow">Naročilo</p>
+          <h2 id="kako-narocite" className="display h-section mt-4 max-w-[14ch]" data-split="">
+            Kako <em>naročite.</em>
+          </h2>
+          <ol className="mt-10 grid gap-px overflow-hidden rounded-3xl bg-crta md:grid-cols-3">
+            {[
+              { t: "Pokličite", d: `Na ${site.phone.display}. Povejte, koliko matic potrebujete in kdaj.` },
+              { t: "Dogovorimo se", d: "Za osebni prevzem pri nas doma v Apačah ali za pošiljanje po pošti." },
+              { t: "Naslednji dan pri vas", d: "Matice po pošti dostavijo naslednji dan, po vsej Sloveniji." },
+            ].map((s, i) => (
+              <li key={s.t} className="bg-papir p-7 md:p-8" data-reveal="">
+                <p className="num text-[3rem] leading-none text-kostanj">{i + 1}</p>
+                <h3 className="h-card mt-3">{s.t}</h3>
+                <p className="mt-2">{s.d}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-8">
+            <CallButton label="Pokličite za matice" variant="smola" />
+          </div>
+        </div>
+      </section>
+
+      <section className="section on-dark bg-hoja">
         <div className="wrap">
           <p className="eyebrow">Od matičnika do pošte</p>
           <h2 className="display h-section mt-4 max-w-[14ch]" data-split="">
@@ -85,7 +111,7 @@ export default function Page() {
       </section>
 
       <Contact n="" />
-      <JsonLd data={[faqSchema(true), breadcrumbSchema([{ name: "Matice", path: "/matice/" }])]} />
+      <JsonLd data={[queenSchema, faqSchema(true), breadcrumbSchema([{ name: "Matice", path: "/matice/" }])]} />
     </>
   );
 }

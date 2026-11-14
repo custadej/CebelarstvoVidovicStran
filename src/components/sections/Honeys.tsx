@@ -1,9 +1,55 @@
 import Link from "next/link";
 import { Honeycomb } from "@/components/Honeycomb";
+import { HoneyPicker } from "@/components/HoneyPicker";
 import { Photo } from "@/components/Photo";
 import { Arrow, CallButton, SectionHead } from "@/components/ui";
-import { honeys } from "@/data/content";
+import { honeys, type Honey } from "@/data/content";
 
+// Light to dark, the way the jars look on the shelf.
+const order = ["akacijev", "cvetlicni", "lipov", "kostanjev", "gozdni", "hojev"];
+const scale = order.map((slug) => honeys.find((h) => h.slug === slug)).filter((h): h is Honey => h !== undefined);
+
+function JarVisual({ h, className = "" }: { h: Honey; className?: string }) {
+  return (
+    <div className={`relative grid place-items-center ${className}`}>
+      <div
+        aria-hidden="true"
+        className="hex absolute inset-x-[8%] inset-y-[4%]"
+        style={{ background: `radial-gradient(circle at 35% 25%, color-mix(in srgb, ${h.color} 70%, #fff), ${h.color} 55%, color-mix(in srgb, ${h.color} 72%, #000))` }}
+      />
+      <Photo slug={h.jar} alt={`Kozarec: ${h.name.toLowerCase()} Čebelarstva Vidovič`} sizes="220px" className="hex-tall relative h-[86%] w-[58%]" position="50% 40%" />
+    </div>
+  );
+}
+
+function HoneyPanel({ h }: { h: Honey }) {
+  return (
+    <div className="grid gap-6 p-5 sm:grid-cols-[minmax(0,220px)_1fr] sm:items-center sm:gap-8 md:p-8">
+      <JarVisual h={h} className="mx-auto aspect-[4/5] w-[52%] max-w-[220px] sm:w-full" />
+      <div>
+        <p className="inline-flex items-center gap-2 rounded-full bg-papir px-3 py-1 text-[0.8125rem] font-semibold tracking-wide">
+          <span aria-hidden="true" className="hex h-3 w-3" style={{ background: h.color }} />
+          {h.tag}
+        </p>
+        <h3 className="display mt-3 text-[clamp(1.9rem,6vw,2.75rem)]">{h.name}</h3>
+        <p className="mt-3 max-w-[48ch]">{h.intro}</p>
+        <dl className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-3">
+          {h.facts.slice(0, 3).map((f) => (
+            <div key={f.label} className="border-t border-crta pt-2">
+              <dt className="eyebrow !text-[0.75rem]">{f.label}</dt>
+              <dd className="mt-1 text-[1.0625rem] leading-snug font-semibold">{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <Link href={`/med/${h.slug}/`} className="arrow-link mt-4 text-kostanj">
+          Več o tem medu <Arrow />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// Used on /med and the honey subpages.
 export function HoneyGrid({ exclude }: { exclude?: string }) {
   const list = honeys.filter((h) => h.slug !== exclude);
   return (
@@ -30,13 +76,7 @@ export function HoneyGrid({ exclude }: { exclude?: string }) {
               className="hex absolute -right-9 -bottom-10 h-48 w-44 transition-transform duration-500 ease-[var(--ease-story)] group-hover:scale-110 group-hover:-rotate-6"
               style={{ background: `radial-gradient(circle at 35% 25%, color-mix(in srgb, ${h.color} 70%, #fff), ${h.color} 55%, color-mix(in srgb, ${h.color} 70%, #000))` }}
             />
-            <Photo
-              slug={h.jar}
-              alt={`Kozarec: ${h.name.toLowerCase()} Čebelarstva Vidovič`}
-              sizes="140px"
-              className="hex-tall absolute right-4 bottom-4 h-[78%] w-[33%]"
-              position="50% 40%"
-            />
+            <Photo slug={h.jar} alt={`Kozarec: ${h.name.toLowerCase()} Čebelarstva Vidovič`} sizes="140px" className="hex-tall absolute right-4 bottom-4 h-[78%] w-[33%]" position="50% 40%" />
           </Link>
         </li>
       ))}
@@ -46,20 +86,18 @@ export function HoneyGrid({ exclude }: { exclude?: string }) {
 
 export function Packaging() {
   return (
-    <div className="grid gap-6 md:grid-cols-2">
-      <div className="rounded-3xl bg-med p-7 text-smola md:p-9" data-reveal="">
+    <div className="grid gap-4 md:grid-cols-2">
+      <div className="rounded-3xl bg-med p-6 text-smola md:p-8" data-reveal="">
         <p className="eyebrow !text-smola">Pakiranja</p>
-        <p className="num mt-4 text-[clamp(1.5rem,6.4vw,3.2rem)] leading-none whitespace-nowrap">
+        <p className="num mt-3 text-[clamp(1.5rem,6.4vw,2.6rem)] leading-none whitespace-nowrap">
           250 g <span className="opacity-50">·</span> 450 g <span className="opacity-50">·</span> 900 g
         </p>
-        <p className="mt-4 max-w-[36ch]">Stekleni kozarci. Večje količine po dogovoru, na voljo so tudi darilne škatle za en, dva ali tri kozarce.</p>
+        <p className="mt-3 max-w-[38ch]">Stekleni kozarci, večje količine po dogovoru. Na voljo so tudi darilne škatle.</p>
       </div>
-      <div className="rounded-3xl bg-papir p-7 md:p-9" data-reveal="">
+      <div className="rounded-3xl bg-papir p-6 md:p-8" data-reveal="">
         <p className="eyebrow">Kje ga dobite</p>
-        <p className="h-card mt-4">Doma v Apačah ali z dostavo.</p>
-        <p className="mt-3 max-w-[38ch]">
-          Med kupite pri nas doma, po dogovoru ga tudi dostavimo na območju Ptuja in Maribora. Pokličite in povejte, kateri med želite.
-        </p>
+        <p className="h-card mt-3">Doma v Apačah ali z dostavo.</p>
+        <p className="mt-3 max-w-[40ch]">Po dogovoru med dostavimo na območju Ptuja in Maribora. Pokličite in povejte, katerega želite.</p>
       </div>
     </div>
   );
@@ -69,35 +107,30 @@ export function Honeys() {
   return (
     <section id="med" className="section">
       <div className="wrap">
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-end lg:gap-16">
-          <SectionHead
-            n="02"
-            eyebrow="Med"
-            title={
-              <>
-                Šest medov, <em>vsak s svoje paše.</em>
-              </>
-            }
-            lead="Čebelnjaki stojijo v Halozah, na akacijevo pašo jih peljem tudi v Prekmurje. Med točim in polnim sam."
+        <SectionHead
+          n="01"
+          eyebrow="Med"
+          title={
+            <>
+              Šest medov, <em>vsak s svoje paše.</em>
+            </>
+          }
+        />
+        <div className="mt-8 rounded-[2rem] bg-smola p-5 text-vosek md:p-8" data-reveal="">
+          <Honeycomb colors={scale.map((h) => h.color)} className="aspect-[5/2] md:aspect-[4/1]" />
+          <p className="mt-4 mb-4 text-[1.0625rem]">Barva pove, s katere paše je med. Izberite vrsto:</p>
+          <HoneyPicker
+            tabs={scale.map((h) => ({ slug: h.slug, label: h.short, color: h.color }))}
+            panels={scale.map((h) => (
+              <HoneyPanel key={h.slug} h={h} />
+            ))}
+            initial={1}
           />
-          <Photo
-            slug="medovi-pet"
-            alt="Pet kozarcev medu Čebelarstva Vidovič v vrsti: kostanjev, gozdni, lipov, cvetlični in akacijev"
-            sizes="(min-width: 1024px) 560px, 92vw"
-            className="frame aspect-[3/2]"
-            parallax
-          />
         </div>
-        <div className="mt-12 lg:mt-16">
-          <HoneyGrid />
-        </div>
-        <div className="mt-6">
-          <Honeycomb />
-        </div>
-        <div className="mt-6">
+        <div className="mt-4">
           <Packaging />
         </div>
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
           <CallButton label="Pokličite za med" variant="smola" />
           <Link href="/med/" className="arrow-link">
             Vse o našem medu <Arrow />

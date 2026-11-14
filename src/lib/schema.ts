@@ -68,3 +68,16 @@ export const honeySchema = (slug: string) => {
     ...(awards.length ? { award: awards } : {}),
   };
 };
+
+export const queenSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "Oplojena in označena matica kranjske čebele",
+  description:
+    "Oplojene in označene matice kranjske čebele iz registriranega vzrejališča, vzrejene pod strokovnim nadzorom Kmetijskega inštituta Slovenije. Osebni prevzem ali pošiljanje po pošti po vsej Sloveniji.",
+  category: "Čebelje matice",
+  image: `${site.url}/img/matica-makro-1200.webp`,
+  brand: { "@type": "Brand", name: site.name },
+  manufacturer: { "@id": id },
+  countryOfOrigin: "SI",
+};

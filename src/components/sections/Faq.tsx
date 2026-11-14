@@ -1,4 +1,3 @@
-import { SectionHead } from "@/components/ui";
 import { faq } from "@/data/content";
 
 export function FaqList({ queensOnly = false }: { queensOnly?: boolean }) {
@@ -19,24 +18,5 @@ export function FaqList({ queensOnly = false }: { queensOnly?: boolean }) {
         </details>
       ))}
     </div>
-  );
-}
-
-export function Faq() {
-  return (
-    <section id="vprasanja" className="section bg-papir">
-      <div className="wrap grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-        <SectionHead
-          n="07"
-          eyebrow="Pogosta vprašanja"
-          title={
-            <>
-              Kar nas <em>najpogosteje vprašate.</em>
-            </>
-          }
-        />
-        <FaqList />
-      </div>
-    </section>
   );
 }

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Photo } from "@/components/Photo";
 import { Arrow, MedalDot, SectionHead } from "@/components/ui";
-import { awardLeads, awardYears, medalLabel } from "@/data/content";
+import { awardLeads, awardYears, medalLabel, reviews } from "@/data/content";
+import { site } from "@/lib/site";
 
+// Full cards, used on /priznanja.
 export function AwardLeads() {
   return (
     <ul className="grid gap-6 lg:grid-cols-3">
@@ -50,33 +52,77 @@ export function AwardYears({ withImages = false }: { withImages?: boolean }) {
   );
 }
 
+const fan = [
+  { slug: "znak-kakovosti-2019", alt: "Plaketa znak kakovosti 2019, Dobrote slovenskih kmetij", tilt: -7, x: "-58%", z: 1 },
+  { slug: "priznanje-agra-2026-zlata", alt: "Zlata medalja AGRA 2026 za cvetlični med", tilt: 6, x: "58%", z: 1 },
+  { slug: "priznanje-drzavni-prvak", alt: "Listina državni prvak za cvetlični med 2019, Čebelarska zveza Slovenije", tilt: -1, x: "0%", z: 2 },
+] as const;
+
 export function Awards() {
   return (
     <section id="priznanja" className="section on-dark bg-smola">
       <div className="wrap">
-        <SectionHead
-          n="05"
-          eyebrow="Priznanja in nagrade"
-          title={
-            <>
-              O medu naj povedo <em>ocenjevalci.</em>
-            </>
-          }
-          lead="Od leta 2017 naš med ocenjujejo na sejmu AGRA v Gornji Radgoni in na Dobrotah slovenskih kmetij na Ptuju."
-        />
-        <div className="mt-12">
-          <AwardLeads />
+        <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
+          <div>
+            <SectionHead
+              n="03"
+              eyebrow="Priznanja in nagrade"
+              title={
+                <>
+                  Državni prvak. <em>In več kot 15 zlatih.</em>
+                </>
+              }
+            />
+            <ul className="mt-7 grid gap-px overflow-hidden rounded-2xl bg-white/15" data-reveal="">
+              {awardLeads.map((a) => (
+                <li key={a.title} className="flex items-baseline gap-4 bg-smola-2 px-5 py-4">
+                  <span className="num w-[3.2rem] flex-none text-[1.35rem] leading-none text-akacija">{a.year}</span>
+                  <span className="leading-snug font-semibold">{a.title}</span>
+                </li>
+              ))}
+              <li className="flex items-baseline gap-4 bg-smola-2 px-5 py-4">
+                <span className="num w-[3.2rem] flex-none text-[1.35rem] leading-none text-akacija">2026</span>
+                <span className="leading-snug font-semibold">Zlata medalja AGRA za cvetlični med</span>
+              </li>
+            </ul>
+            <Link href="/priznanja/" className="arrow-link mt-5 text-akacija">
+              Vsa priznanja po letih <Arrow />
+            </Link>
+          </div>
+
+          <div className="relative mx-auto h-[300px] w-full max-w-[460px] md:h-[380px]" data-reveal="">
+            {fan.map((f) => (
+              <div key={f.slug} className="absolute top-1/2 left-1/2 w-[46%]" style={{ transform: `translate(calc(-50% + ${f.x}), -50%)`, zIndex: f.z }}>
+                <div className="sheet" style={{ "--tilt": `${f.tilt}deg` } as React.CSSProperties}>
+                  <Photo slug={f.slug} alt={f.alt} sizes="220px" className="aspect-[3/4]" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="scroller -mr-5 mt-10 pt-4 pr-5 md:mr-0 md:pr-0">
-          {(["priznanje-agra-2026-zlata", "priznanja-2025", "priznanja-agra-2024", "priznanja-agra-2022", "medalja-agra-2020", "priznanje-agra-2018"] as const).map((slug, i) => (
-            <div key={slug} className="sheet w-[58vw] max-w-[240px]" style={{ "--tilt": `${[-2, 1.5, -1, 2, -1.5, 1][i]}deg` } as React.CSSProperties}>
-              <Photo slug={slug} alt={`Priznanje za med, ${slug.replace(/\D+/g, " ").trim()}`} sizes="240px" className="aspect-[3/4]" />
-            </div>
-          ))}
+
+        <div className="mt-12 grid gap-6 border-t border-white/15 pt-8 lg:grid-cols-[auto_1fr] lg:items-center lg:gap-12" data-reveal="">
+          <p className="flex items-end gap-3">
+            <span className="num text-[3.5rem] leading-[0.85] text-akacija">4,9</span>
+            <span className="pb-0.5 text-[0.95rem] leading-snug">
+              od 5 na Googlu
+              <br />
+              <a href={site.googleProfile} target="_blank" rel="noopener noreferrer" className="link font-semibold">
+                20 mnenj
+              </a>
+            </span>
+          </p>
+          <ul className="rail -mx-7 gap-3 px-7 md:mx-0 md:grid md:grid-cols-3 md:px-0">
+            {reviews.slice(0, 3).map((r) => (
+              <li key={r.text} className="w-[78vw] max-w-[320px] rounded-2xl bg-smola-2 p-5 md:w-auto md:max-w-none">
+                <blockquote className="leading-snug font-semibold">„{r.text}“</blockquote>
+                <p className="muted mt-2 text-[0.875rem]">
+                  {r.author} · {r.source}
+                </p>
+              </li>
+            ))}
+          </ul>
         </div>
-        <Link href="/priznanja/" className="arrow-link mt-6 text-akacija">
-          Vsa priznanja po letih <Arrow />
-        </Link>
       </div>
     </section>
   );

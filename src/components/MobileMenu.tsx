@@ -55,9 +55,10 @@ export function MobileMenu() {
                   href={item.href}
                   onClick={() => setOpen(false)}
                   aria-current={pathname === item.href ? "page" : undefined}
-                  className="display flex min-h-14 items-center justify-between border-b border-crta text-[2rem] aria-[current=page]:text-kostanj"
+                  className={`display flex min-h-14 items-center justify-between border-b border-crta text-[1.9rem] aria-[current=page]:text-kostanj ${item.href === "/matice/" ? "mt-3 rounded-2xl border-b-0 bg-hoja px-4 !text-vosek" : ""}`}
                 >
                   {item.label}
+                  {item.href === "/matice/" ? <span className="font-sans text-[0.8125rem] font-semibold tracking-[0.14em] text-akacija uppercase">za čebelarje</span> : null}
                 </Link>
               </li>
             ))}
