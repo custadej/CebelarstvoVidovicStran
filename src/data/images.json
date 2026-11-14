@@ -293,6 +293,17 @@
   ],
   "blur": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAADwBACdASoUABIAPu1qrVCppaQiqAqpMB2JQAADi/LWF/+R/Q6AF+keYbwqvCfWnNAA/sGBmRTmT+7DwHIX1Pk45I1d2J+ICKEXjwYXFBrBio83hinC+ffyT8AUKr1vn3/Py/9S7W3RyMGR7HdJyZQGJebNn8za39wFjS4ntWpY6xIU5SkIEfgA"
  },
+ "hero-matica-satje": {
+  "width": 1360,
+  "height": 978,
+  "widths": [
+   480,
+   800,
+   1200,
+   1360
+  ],
+  "blur": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAADwAwCdASoUAA4APu1iqU2ppaOiMAgBMB2JbACdMoABXsUm5AtSu/GCAP4ylgQrlLeUPm3Plhg/17UG/xvNCf9wSItYEIe3XRWVZCbp1fgRuMySp+3tPhGfl8jYRE6CWQx8QKdC7EJqzlp5XrV/8IfdiQw+YfZ8Fs4yJYTe2blNC6w2RbkcuBqdSpkVQ6JgAAA="
+ },
  "cebela-regrat": {
   "width": 1440,
   "height": 960,

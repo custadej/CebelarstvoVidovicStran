@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Photo } from "@/components/Photo";
+import { Rail } from "@/components/Rail";
 import { Arrow, SectionHead } from "@/components/ui";
 import { products } from "@/data/content";
 
@@ -21,9 +22,9 @@ export function ProductList({ detailed = false }: { detailed?: boolean }) {
     );
   }
   return (
-    <ul className="rail -mx-7 gap-4 px-7 md:mx-0 md:grid md:grid-cols-5 md:gap-4 md:overflow-visible md:px-0">
+    <Rail label="Ostali čebelji pridelki" className="-mr-7 gap-4 pr-7 md:mr-0 md:grid md:grid-cols-5 md:gap-4 md:overflow-visible md:pr-0">
       {products.map((p) => (
-        <li key={p.id} className="w-[44vw] max-w-[220px] md:w-auto md:max-w-none" data-reveal="">
+        <div key={p.id} role="listitem" className="w-[40vw] max-w-[210px] md:w-auto md:max-w-none">
           <Link href={`/cebelji-pridelki/#${p.id}`} className="group block">
             <Photo
               slug={p.image}
@@ -35,9 +36,9 @@ export function ProductList({ detailed = false }: { detailed?: boolean }) {
             <h3 className="mt-3 text-[1.125rem] leading-tight font-bold">{p.name}</h3>
             <p className="mt-1 text-[0.95rem] leading-snug opacity-80">{p.detail}</p>
           </Link>
-        </li>
+        </div>
       ))}
-    </ul>
+    </Rail>
   );
 }
 

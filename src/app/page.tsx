@@ -4,7 +4,6 @@ import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
 import { Honeys } from "@/components/sections/Honeys";
 import { Products } from "@/components/sections/Products";
-import { QueenBanner } from "@/components/sections/QueenBanner";
 import { Story } from "@/components/sections/Story";
 import { pageMeta } from "@/lib/meta";
 
@@ -18,7 +17,7 @@ export const metadata = {
   title: { absolute: "Čebelarstvo Vidovič | Domač med iz Haloz in matice čebel" },
 };
 
-// Customer first: what we sell (med), the one door for beekeepers (matice), what else, why trust us, who we are, how to reach us.
+// Customer first: what we sell (med), what else, why trust us, who we are, how to reach us. Queens live on /matice (nav, hero line, footer).
 export default function Home() {
   return (
     <>
@@ -26,7 +25,6 @@ export default function Home() {
       <div className="relative" data-thread-root="">
         <HoneyThread />
         <Honeys />
-        <QueenBanner />
         <Products />
         <Awards />
         <Story />

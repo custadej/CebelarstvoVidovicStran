@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Photo } from "@/components/Photo";
+import { Rail } from "@/components/Rail";
 import { Arrow, MedalDot, SectionHead } from "@/components/ui";
 import { awardLeads, awardYears, medalLabel, reviews } from "@/data/content";
 import { site } from "@/lib/site";
@@ -22,32 +23,60 @@ export function AwardLeads() {
   );
 }
 
-export function AwardYears({ withImages = false }: { withImages?: boolean }) {
+// One list, newest year first. The three big ones (awardLeads) are shown in place at their year on phones and
+// tablets; from lg up they are the card row above the list (AwardLeads), so they are hidden here.
+export function AwardYears({ withImages = false, inlineLeads = false }: { withImages?: boolean; inlineLeads?: boolean }) {
   return (
     <ol className="grid gap-px overflow-hidden rounded-3xl bg-white/15">
-      {awardYears.map((y) => (
-        <li key={y.year} className="grid gap-4 bg-smola-2 p-6 md:grid-cols-[7rem_1fr_auto] md:items-start md:gap-8 md:p-8" data-reveal="">
-          <p className="num text-[2.75rem] leading-none text-akacija">{y.year}</p>
-          <ul className="grid gap-2">
-            {y.awards.map((a) => (
-              <li key={`${a.event}-${a.honey}-${a.medal}`} className="flex items-baseline gap-3 leading-snug">
-                <span className="translate-y-[1px]">
-                  <MedalDot medal={a.medal} />
-                </span>
-                <span>
-                  <strong>{a.medal === "naziv" ? a.event : `${medalLabel[a.medal]}, ${a.event}`}</strong>
-                  <span className="muted"> · {a.honey}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-          {withImages && y.image ? (
-            <div className="sheet w-[150px]" style={{ "--tilt": "2deg" } as React.CSSProperties}>
-              <Photo slug={y.image} alt={y.imageAlt ?? ""} sizes="150px" />
+      {awardYears.map((y) => {
+        const leads = inlineLeads ? awardLeads.filter((a) => a.year === y.year) : [];
+        const big = leads.length > 0;
+        return (
+          <li key={y.year} className={`grid gap-4 bg-smola-2 p-6 md:grid-cols-[7rem_1fr_auto] md:items-start md:gap-8 md:p-8 ${big ? "max-lg:border-l-4 max-lg:border-med" : ""}`} data-reveal="">
+            <p className={`num leading-none text-akacija ${big ? "text-[4rem] lg:text-[2.75rem]" : "text-[2.75rem]"}`}>{y.year}</p>
+            <div>
+              {big ? (
+                <ul className="mb-5 grid gap-4 lg:hidden">
+                  {leads.map((a) => (
+                    <li key={a.title} className="rounded-2xl bg-smola p-5 shadow-[inset_0_0_0_1.5px_rgb(212_134_27/0.7)]">
+                      <div className="flex items-start gap-4">
+                        <div className="sheet w-[84px] flex-none" style={{ "--tilt": "-3deg" } as React.CSSProperties}>
+                          <Photo slug={a.image} alt={a.alt} sizes="84px" className="aspect-[3/4]" />
+                        </div>
+                        <div>
+                          <h3 className="h-card !text-[1.4rem] text-akacija">{a.title}</h3>
+                          <p className="mt-2 text-[1rem] leading-snug">{a.text}</p>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              <ul className="grid gap-2">
+                {y.awards.map((a) => (
+                  <li
+                    key={`${a.event}-${a.honey}-${a.medal}`}
+                    className={`items-baseline gap-3 leading-snug ${big && a.medal === "naziv" ? "hidden lg:flex" : "flex"}`}
+                  >
+                    <span className="translate-y-[1px]">
+                      <MedalDot medal={a.medal} />
+                    </span>
+                    <span>
+                      <strong>{a.medal === "naziv" ? a.event : `${medalLabel[a.medal]}, ${a.event}`}</strong>
+                      <span className="muted"> · {a.honey}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ) : null}
-        </li>
-      ))}
+            {withImages && y.image ? (
+              <div className={`sheet w-[150px] ${big ? "hidden lg:block" : ""}`} style={{ "--tilt": "2deg" } as React.CSSProperties}>
+                <Photo slug={y.image} alt={y.imageAlt ?? ""} sizes="150px" />
+              </div>
+            ) : null}
+          </li>
+        );
+      })}
     </ol>
   );
 }
@@ -112,16 +141,16 @@ export function Awards() {
               </a>
             </span>
           </p>
-          <ul className="rail -mx-7 gap-3 px-7 md:mx-0 md:grid md:grid-cols-3 md:px-0">
+          <Rail label="Mnenja kupcev" className="-mr-7 gap-3 pr-7 md:mr-0 md:grid md:grid-cols-3 md:overflow-visible md:pr-0">
             {reviews.slice(0, 3).map((r) => (
-              <li key={r.text} className="w-[78vw] max-w-[320px] rounded-2xl bg-smola-2 p-5 md:w-auto md:max-w-none">
+              <div key={r.text} role="listitem" className="w-[74vw] max-w-[300px] rounded-2xl bg-smola-2 p-5 md:w-auto md:max-w-none">
                 <blockquote className="leading-snug font-semibold">„{r.text}“</blockquote>
                 <p className="muted mt-2 text-[0.875rem]">
                   {r.author} · {r.source}
                 </p>
-              </li>
+              </div>
             ))}
-          </ul>
+          </Rail>
         </div>
       </div>
     </section>

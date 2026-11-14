@@ -13,7 +13,7 @@ export const site = {
   phone: { display: "041 579 827", href: "tel:+38641579827", e164: "+38641579827" },
   email: "joza.vidovic@gmail.com",
   facebook: "https://www.facebook.com/cebelarstvo.vidovic",
-  googleProfile: "https://share.google/PS9Ysx4K4Hnh9sfLw",
+  googleProfile: "https://share.google/w1YRdMSk2vJwd88fL",
   maps: "https://www.google.com/maps/search/?api=1&query=%C4%8Cebelarstvo+Vidovi%C4%8D%2C+Apa%C4%8De+300%2C+2324+Lovrenc+na+Dravskem+polju",
   tagline: "Kar delaš, delaj z ljubeznijo.",
 } as const;

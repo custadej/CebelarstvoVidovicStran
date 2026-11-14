@@ -1,18 +1,20 @@
 import Link from "next/link";
+import { HeroPhotoSwitch } from "@/components/HeroPhotoSwitch";
 import { Photo } from "@/components/Photo";
 import { Arrow, CallButton } from "@/components/ui";
 import { site } from "@/lib/site";
 
-// Honey first. The photo is shown framed (never wider than ~680 px) so the 1456 px source stays sharp on retina.
-// To try another photo, change `slug` below to any key from src/data/images.json (candidates: vault/attachments/hero-kandidati.jpg).
-const heroPhoto = {
-  slug: "medovi-pet",
-  alt: "Pet kozarcev medu Čebelarstva Vidovič v vrsti: kostanjev, gozdni, lipov, cvetlični in akacijev",
-} as const;
+// Honey first. The photo is framed (never wider than ~600 px) so the source stays sharp on retina screens.
+// TEMPORARY: three candidates with a switch (HeroPhotoSwitch). After Tadej picks one, keep only that entry.
+const heroPhotos = [
+  { slug: "medovi-pet", label: "pet kozarcev medu", alt: "Pet kozarcev medu Čebelarstva Vidovič v vrsti: kostanjev, gozdni, lipov, cvetlični in akacijev", position: "50% 50%" },
+  { slug: "hero-matica-satje", label: "matica na satju", alt: "Matica med delavkami na satju", position: "55% 50%" },
+  { slug: "cebele-satje", label: "čebele na satju (fb-081)", alt: "Čebele na svetlem satju", position: "30% 60%" },
+] as const;
 
 const trust = [
   { big: "15+", label: "zlatih medalj in priznanj za med" },
-  { big: "2019", label: "državni prvak za cvetlični med" },
+  { big: "6", label: "vrst medu, kozarci 250, 450 in 900 g" },
   { big: "1998", label: "čebelarim od takrat, pomagajo domači" },
   { big: "4,9", label: "ocena na Googlu, 20 mnenj", href: site.googleProfile },
 ];
@@ -35,7 +37,7 @@ export function Hero() {
             </span>
           </h1>
           <p className="lead rise mt-6 max-w-[32ch]" style={s(3)}>
-            Šest vrst medu iz naših čebelnjakov. Cvetlični je bil leta 2019 državni prvak.
+            Šest vrst medu iz naših čebelnjakov. Točim in polnim ga sam.
           </p>
           <div className="rise mt-8 flex flex-col gap-3 whitespace-nowrap sm:flex-row sm:flex-wrap sm:items-center" style={s(4)}>
             <CallButton magnetic />
@@ -51,19 +53,26 @@ export function Hero() {
           </p>
         </div>
 
-        <div className="relative order-first lg:order-none">
-          <Photo
-            slug={heroPhoto.slug}
-            alt={heroPhoto.alt}
-            sizes="(min-width: 1280px) 600px, (min-width: 1024px) 48vw, 92vw"
-            priority
-            className="unveil aspect-[3/2] w-full rounded-[1.75rem]"
-          />
-          <p className="absolute -bottom-4 left-4 flex items-center gap-3 rounded-full bg-med py-2 pr-5 pl-2 text-[0.95rem] leading-tight font-bold text-smola shadow-[0_18px_30px_-16px_rgb(0_0_0/0.7)] md:left-6">
-            <span aria-hidden="true" className="hex grid h-9 w-8 place-items-center bg-smola text-[0.7rem] text-akacija">
+        <div className="relative order-first lg:order-none" data-hero-choice="1">
+          {heroPhotos.map((p, i) => (
+            <div key={p.slug} data-hero={i + 1}>
+              <Photo
+                slug={p.slug}
+                alt={p.alt}
+                sizes="(min-width: 1280px) 600px, (min-width: 1024px) 48vw, 92vw"
+                priority={i === 0}
+                position={p.position}
+                className={`${i === 0 ? "unveil" : ""} aspect-[3/2] w-full rounded-[1.75rem]`}
+              />
+            </div>
+          ))}
+          <HeroPhotoSwitch count={heroPhotos.length} labels={heroPhotos.map((p) => p.label)} />
+          {/* The one mention of the title in the hero: a quiet seal inside the photo, not a banner. */}
+          <p className="absolute bottom-3 left-3 flex items-center gap-2 rounded-full bg-smola/80 py-1.5 pr-3.5 pl-1.5 text-[0.8125rem] leading-none font-semibold text-vosek backdrop-blur-sm md:bottom-4 md:left-4">
+            <span aria-hidden="true" className="hex grid h-6 w-[1.35rem] place-items-center bg-akacija text-[0.6rem] text-smola">
               ★
             </span>
-            Državni prvak 2019 · cvetlični med
+            Državni prvak 2019 <span className="opacity-70">· cvetlični med</span>
           </p>
         </div>
       </div>

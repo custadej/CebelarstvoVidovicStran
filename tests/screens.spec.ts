@@ -37,9 +37,11 @@ for (const route of routes) {
         await page.screenshot({ path: `screenshots/${name}-${width}-${String(i).padStart(2, "0")}.png` });
         i++;
       }
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      if (overflow > 1) errors.push(`horizontal overflow: ${overflow}px`);
+      // Compare with the configured width: on mobile emulation the layout viewport itself grows when content overflows.
+      const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+      if (scrollWidth > width + 1) errors.push(`horizontal overflow: page is ${scrollWidth}px wide in a ${width}px viewport`);
       if (errors.length) console.log(`[${route} @${width}]`, errors.join(" | "));
+      if (errors.some((e) => e.startsWith("horizontal overflow"))) throw new Error(errors.join(" | "));
       await context.close();
     });
   }

@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Honeycomb } from "@/components/Honeycomb";
-import { HoneyPicker } from "@/components/HoneyPicker";
+import { HoneyExplorer } from "@/components/HoneyExplorer";
 import { Photo } from "@/components/Photo";
 import { Arrow, CallButton, SectionHead } from "@/components/ui";
 import { honeys, type Honey } from "@/data/content";
@@ -117,10 +116,8 @@ export function Honeys() {
           }
         />
         <div className="mt-8 rounded-[2rem] bg-smola p-5 text-vosek md:p-8" data-reveal="">
-          <Honeycomb colors={scale.map((h) => h.color)} className="aspect-[5/2] md:aspect-[4/1]" />
-          <p className="mt-4 mb-4 text-[1.0625rem]">Barva pove, s katere paše je med. Izberite vrsto:</p>
-          <HoneyPicker
-            tabs={scale.map((h) => ({ slug: h.slug, label: h.short, color: h.color }))}
+          <HoneyExplorer
+            items={scale.map((h) => ({ slug: h.slug, label: h.short, name: h.name, color: h.color }))}
             panels={scale.map((h) => (
               <HoneyPanel key={h.slug} h={h} />
             ))}

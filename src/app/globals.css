@@ -604,13 +604,19 @@ html.lenis body {
     }
   }
 
-  /* honey picker */
+  /* rails: scroll-snap rows with edge fades, dots and arrows (see Rail.tsx) */
+  .rail-wrap {
+    /* a grid or flex item must be allowed to shrink below the width of the cards inside it */
+    min-width: 0;
+    max-width: 100%;
+  }
   .rail {
     display: flex;
     gap: 0.5rem;
     overflow-x: auto;
-    scroll-snap-type: x proximity;
+    scroll-snap-type: x mandatory;
     scrollbar-width: none;
+    overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
   }
   .rail::-webkit-scrollbar {
@@ -620,6 +626,99 @@ html.lenis body {
     flex: none;
     scroll-snap-align: start;
   }
+  .rail[data-fade="end"] {
+    mask-image: linear-gradient(to right, #000 calc(100% - 2.75rem), transparent);
+  }
+  .rail[data-fade="start"] {
+    mask-image: linear-gradient(to left, #000 calc(100% - 2.75rem), transparent);
+  }
+  .rail[data-fade="both"] {
+    mask-image: linear-gradient(to right, transparent, #000 2.75rem, #000 calc(100% - 2.75rem), transparent);
+  }
+  .rail[data-dragging] {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    user-select: none;
+  }
+  .rail-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.25;
+    transition:
+      width 220ms var(--ease-ui),
+      opacity 220ms var(--ease-ui),
+      background-color 220ms var(--ease-ui);
+  }
+  .rail-dot[data-on] {
+    width: 1.5rem;
+    opacity: 1;
+    background: var(--color-med);
+  }
+  .rail-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1.5px currentColor;
+    transition:
+      transform 160ms var(--ease-ui),
+      background-color 200ms var(--ease-ui),
+      opacity 200ms var(--ease-ui);
+  }
+  .rail-arrow:active {
+    transform: scale(0.94);
+  }
+  .rail-arrow:disabled {
+    opacity: 0.3;
+  }
+  @media (hover: hover) {
+    .rail-arrow:not(:disabled):hover {
+      background: color-mix(in srgb, currentColor 12%, transparent);
+    }
+  }
+
+  /* honeycomb as a selector */
+  /* the 3D layer only takes pointer input once it is actually running; on phones the SVG underneath is the target */
+  .honeycomb-canvas {
+    pointer-events: none;
+  }
+  .honeycomb-canvas[data-ready] {
+    pointer-events: auto;
+  }
+  .comb-hex {
+    cursor: pointer;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition:
+      transform 180ms var(--ease-ui),
+      opacity 220ms var(--ease-ui),
+      filter 220ms var(--ease-ui);
+  }
+  .comb-hex:active {
+    transform: scale(0.94);
+  }
+  .comb[data-has-active] .comb-hex:not([data-on]) {
+    opacity: 0.55;
+  }
+  .comb-hex[data-on] {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 6px rgb(241 203 107 / 0.55));
+  }
+  @media (hover: hover) {
+    .comb-hex:not([data-on]):hover {
+      opacity: 1;
+      filter: brightness(1.15);
+    }
+  }
+  .comb:has(.comb-key:focus-visible) {
+    outline: 3px solid var(--color-med);
+    outline-offset: 6px;
+    border-radius: 1rem;
+  }
+
   .tab {
     display: inline-flex;
     align-items: center;
@@ -663,5 +762,18 @@ html.lenis body {
     .panel:not([hidden]) {
       animation: panel-in 380ms var(--ease-story) both;
     }
+  }
+}
+
+/* TEMPORARY hero photo switch (remove with HeroPhotoSwitch.tsx) */
+@layer components {
+  [data-hero-choice="1"] [data-hero]:not([data-hero="1"]),
+  [data-hero-choice="2"] [data-hero]:not([data-hero="2"]),
+  [data-hero-choice="3"] [data-hero]:not([data-hero="3"]) {
+    display: none;
+  }
+  [data-hero-choice="2"] [data-hero="2"],
+  [data-hero-choice="3"] [data-hero="3"] {
+    display: block;
   }
 }

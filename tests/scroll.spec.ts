@@ -14,6 +14,9 @@ const scrollY = (page: Page) => page.evaluate(() => Math.round(window.scrollY));
 async function settle(page: Page) {
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(900);
+  // guard: a horizontal overflow silently widens the mobile layout viewport and breaks everything else
+  const vw = page.viewportSize()!.width;
+  expect(await page.evaluate(() => document.documentElement.scrollWidth), "no horizontal overflow").toBeLessThanOrEqual(vw + 1);
 }
 
 async function scrollToBottom(page: Page) {
