@@ -1,19 +1,47 @@
-import { site } from "@/lib/site";
+import { HoneyThread } from "@/components/HoneyThread";
+import { Awards } from "@/components/sections/Awards";
+import { Contact } from "@/components/sections/Contact";
+import { Faq } from "@/components/sections/Faq";
+import { Hero } from "@/components/sections/Hero";
+import { Honeys } from "@/components/sections/Honeys";
+import { Products } from "@/components/sections/Products";
+import { Queens } from "@/components/sections/Queens";
+import { Reviews } from "@/components/sections/Reviews";
+import { Story } from "@/components/sections/Story";
+import { Trust } from "@/components/sections/Trust";
+import { Where } from "@/components/sections/Where";
+import { JsonLd } from "@/components/ui";
+import { pageMeta } from "@/lib/meta";
+import { faqSchema } from "@/lib/schema";
+
+export const metadata = {
+  ...pageMeta({
+    title: "Čebelarstvo Vidovič | Med in matice iz Haloz",
+    description:
+      "Čebelarstvo Vidovič, Apače pri Kidričevem: oplojene in označene matice kranjske čebele, tudi po pošti, ter nagrajeni med iz Haloz. Državni prvak 2019. Pokličite Jožeta: 041 579 827.",
+    path: "/",
+  }),
+  title: { absolute: "Čebelarstvo Vidovič | Med in matice iz Haloz" },
+};
 
 export default function Home() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-3xl flex-col justify-center gap-6 px-6 py-16">
-      <p className="text-sm tracking-[0.14em] text-kostanj uppercase">Ogrodje projekta</p>
-      <h1 className="font-display text-5xl leading-[1.05] sm:text-7xl">{site.name}</h1>
-      <p>
-        Nova spletna stran je v pripravi. {site.address.street}, {site.address.postalCode} {site.address.city}.
-      </p>
-      <a
-        href={site.phone.href}
-        className="inline-flex min-h-12 w-fit items-center rounded-full bg-smola px-6 font-semibold text-papir"
-      >
-        Pokličite Jožeta · {site.phone.display}
-      </a>
-    </main>
+    <>
+      <Hero />
+      <Trust />
+      <div className="relative" data-thread-root="">
+        <HoneyThread />
+        <Queens />
+        <Honeys />
+        <Products />
+        <Story />
+        <Awards />
+        <Reviews />
+        <Where />
+        <Faq />
+        <Contact />
+      </div>
+      <JsonLd data={faqSchema()} />
+    </>
   );
 }

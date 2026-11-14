@@ -4,22 +4,588 @@
   --color-vosek: #f6efdf;
   --color-papir: #fffbf2;
   --color-smola: #1f1711;
+  --color-smola-2: #2b2118;
   --color-hoja: #20362b;
+  --color-hoja-2: #2a4638;
   --color-med: #d4861b;
+  --color-med-svetel: #e9a53a;
   --color-kostanj: #8c4a14;
   --color-akacija: #f1cb6b;
+  --color-crta: #dccfb4;
+  --color-panj-rumena: #f2b90f;
+  --color-panj-modra: #2f6fb5;
+  --color-panj-zelena: #3e8e4b;
+  --color-panj-rdeca: #c8402f;
+  --color-panj-oranzna: #e57a1c;
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-source), ui-sans-serif, system-ui, sans-serif;
   --ease-ui: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-story: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+:root {
+  --thread-x: 11px;
+  --header-h: 60px;
+}
+@media (min-width: 768px) {
+  :root {
+    --thread-x: 26px;
+    --header-h: 68px;
+  }
+}
+
+@layer base {
 html {
   background: var(--color-vosek);
   color: var(--color-smola);
+  scroll-padding-top: calc(var(--header-h) + 24px);
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.lenis) {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
   font-family: var(--font-sans);
   font-size: 1.125rem;
   line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+@media (min-width: 1024px) {
+  body {
+    font-size: 1.1875rem;
+  }
+}
+
+::selection {
+  background: var(--color-akacija);
+  color: var(--color-smola);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-med);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+}
+
+@layer components {
+/* ---------- layout ---------- */
+.wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-left: 2rem;
+  padding-right: 1.25rem;
+}
+@media (min-width: 768px) {
+  .wrap {
+    padding-left: 5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(4.5rem, 10vw, 7.5rem);
+}
+
+/* ---------- type ---------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 70, "opsz" 144;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.h-hero {
+  font-size: clamp(3.1rem, 13.5vw, 8.75rem);
+}
+.h-page {
+  font-size: clamp(2.75rem, 10vw, 6.5rem);
+}
+.h-section {
+  font-size: clamp(2.25rem, 7.4vw, 4.6rem);
+  line-height: 1.03;
+}
+.h-card {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 60, "opsz" 48;
+  font-size: clamp(1.5rem, 4.6vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.display em,
+.h-card em {
+  font-style: italic;
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+  color: var(--color-kostanj);
+}
+.on-dark .display em,
+.on-dark .h-card em {
+  color: var(--color-akacija);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-kostanj);
+}
+.on-dark .eyebrow {
+  color: var(--color-akacija);
+}
+
+.lead {
+  font-size: clamp(1.2rem, 3.4vw, 1.45rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.prose p + p {
+  margin-top: 1.1em;
+}
+.prose p {
+  text-wrap: pretty;
+  max-width: 62ch;
+}
+
+.num {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 40, "opsz" 96;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.on-dark {
+  color: var(--color-vosek);
+}
+.muted {
+  color: color-mix(in srgb, currentColor 72%, transparent);
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 3.5rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.15;
+  text-align: center;
+  transition:
+    transform 160ms var(--ease-ui),
+    background-color 200ms var(--ease-ui),
+    color 200ms var(--ease-ui),
+    box-shadow 200ms var(--ease-ui);
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-med {
+  background: var(--color-med);
+  color: var(--color-smola);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 10px 24px -12px rgb(212 134 27 / 0.9);
+}
+.btn-smola {
+  background: var(--color-smola);
+  color: var(--color-papir);
+}
+.btn-ghost {
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+@media (hover: hover) {
+  .btn-med:hover {
+    background: var(--color-med-svetel);
+  }
+  .btn-smola:hover {
+    background: var(--color-kostanj);
+  }
+  .btn-ghost:hover {
+    background: color-mix(in srgb, currentColor 12%, transparent);
+  }
+}
+.btn .tel {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 40, "opsz" 36;
+  font-weight: 600;
+  font-size: 1.15em;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.link {
+  text-decoration: underline;
+  text-decoration-color: var(--color-med);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 180ms var(--ease-ui);
+}
+@media (hover: hover) {
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+}
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  font-weight: 700;
+}
+.arrow-link svg {
+  transition: transform 220ms var(--ease-ui);
+}
+@media (hover: hover) {
+  .arrow-link:hover svg {
+    transform: translateX(5px);
+  }
+}
+
+/* ---------- motifs ---------- */
+.hex {
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.hex-tall {
+  clip-path: polygon(50% 0, 100% 13%, 100% 87%, 50% 100%, 0 87%, 0 13%);
+}
+.frame {
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: var(--color-crta);
+}
+
+.strip {
+  display: flex;
+  height: 6px;
+  width: 100%;
+}
+.strip i {
+  display: block;
+  height: 100%;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+}
+
+/* section node on the honey thread */
+.node {
+  position: absolute;
+  left: calc(var(--thread-x) - 13px);
+  top: 0.1rem;
+  width: 26px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-smola);
+  z-index: 3;
+}
+.node::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-med);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  z-index: -1;
+  transition: transform 500ms var(--ease-story);
+}
+@media (min-width: 768px) {
+  .node {
+    left: calc(var(--thread-x) - 19px);
+    width: 38px;
+    height: 43px;
+    font-size: 0.8125rem;
+  }
+}
+.motion .node:not(.is-filled)::before {
+  transform: scale(0.55);
+  background: color-mix(in srgb, var(--color-med) 35%, var(--color-vosek));
+}
+
+/* honey thread */
+.thread {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--thread-x) - 10px);
+  width: 20px;
+  z-index: 2;
+  pointer-events: none;
+}
+.thread svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.thread-drop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 16px;
+  margin: -6px 0 0 -6px;
+  background: radial-gradient(circle at 35% 30%, #f6d27a, var(--color-med) 60%, var(--color-kostanj));
+  border-radius: 50% 50% 50% 50% / 38% 38% 62% 62%;
+  opacity: 0;
+  will-change: transform;
+}
+
+/* ---------- hero load animation (CSS only, no JS needed for LCP) ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.1em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes unveil {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: scale(1.08);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 900ms var(--ease-story) both;
+    animation-delay: calc(var(--i, 0) * 110ms + 120ms);
+  }
+  .unveil {
+    animation: unveil 1400ms var(--ease-story) both;
+  }
+}
+
+/* ---------- details / faq ---------- */
+details.faq {
+  border-bottom: 1px solid var(--color-crta);
+}
+details.faq summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 60, "opsz" 36;
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+  line-height: 1.25;
+}
+details.faq summary::-webkit-details-marker {
+  display: none;
+}
+details.faq summary .plus {
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0.1rem;
+  border-radius: 999px;
+  background: var(--color-smola);
+  color: var(--color-papir);
+  display: grid;
+  place-items: center;
+  transition: transform 220ms var(--ease-ui), background-color 220ms var(--ease-ui);
+}
+details.faq[open] summary .plus {
+  transform: rotate(45deg);
+  background: var(--color-med);
+  color: var(--color-smola);
+}
+details.faq .answer {
+  padding: 0 3rem 1.5rem 0;
+  max-width: 60ch;
+}
+
+/* ---------- form ---------- */
+.field label {
+  display: block;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.9rem;
+  background: var(--color-papir);
+  color: var(--color-smola);
+  border: 1.5px solid var(--color-crta);
+  font: inherit;
+  transition: border-color 160ms var(--ease-ui), box-shadow 160ms var(--ease-ui);
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--color-med);
+  box-shadow: 0 0 0 4px rgb(212 134 27 / 0.25);
+}
+
+/* certificate sheets */
+.sheet {
+  background: #fff;
+  padding: 6px;
+  border-radius: 4px;
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.5) inset,
+    0 24px 40px -24px rgb(0 0 0 / 0.75);
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform 260ms var(--ease-ui);
+}
+@media (hover: hover) {
+  .sheet:hover {
+    transform: rotate(0deg) translateY(-6px);
+  }
+}
+
+.scroller {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-med) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.scroller > * {
+  scroll-snap-align: start;
+  flex: none;
+}
+
+/* custom cursor dot (desktop only, added by Motion) */
+.cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 999px;
+  background: var(--color-med);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+}
+
+/* sticky call bar spacing on phones */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom));
+  }
+}
+
+
+/* SplitText line masks: room for č, š, ž carons and descenders at tight leading */
+.line-mask {
+  padding-block: 0.16em;
+  margin-block: -0.16em;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Queen story: sticky photo only when motion runs on desktop */
+.story-sticky {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .motion .story-sticky {
+    display: block;
+  }
+  .motion .story-inline {
+    display: none;
+  }
+  .motion [data-step] {
+    opacity: 0.38;
+    transition: opacity 400ms var(--ease-ui);
+  }
+  .motion [data-step].is-active {
+    opacity: 1;
+  }
+}
+
+/* legal pages */
+.legal h2 {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 60, "opsz" 36;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  margin-top: 2.5rem;
+}
+.legal p,
+.legal ul {
+  margin-top: 0.9rem;
+  max-width: 66ch;
+}
+.legal ul {
+  list-style: disc;
+  padding-left: 1.3rem;
+}
+.legal li + li {
+  margin-top: 0.35rem;
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  .honeycomb-svg {
+    transition: opacity 500ms var(--ease-story);
+  }
+  .honeycomb:has(.honeycomb-canvas[data-ready="1"]) .honeycomb-svg {
+    opacity: 0;
+  }
 }
