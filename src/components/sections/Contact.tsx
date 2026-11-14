@@ -24,6 +24,7 @@ export function Contact({ as = "h2", n = "05" }: { as?: "h1" | "h2"; n?: string 
             <SectionHead
               n={as === "h1" || !n ? undefined : n}
               as={as}
+              size="section"
               eyebrow="Kontakt"
               title={
                 <>

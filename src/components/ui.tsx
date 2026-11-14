@@ -61,9 +61,11 @@ export function SectionHead({
   title,
   lead,
   as = "h2",
+  size,
   className = "",
 }: {
   n?: string;
+  size?: "page" | "section";
   eyebrow: string;
   title: ReactNode;
   lead?: ReactNode;
@@ -79,7 +81,7 @@ export function SectionHead({
         </span>
       ) : null}
       <p className="eyebrow">{eyebrow}</p>
-      <H className={`display ${as === "h1" ? "h-page" : "h-section"} mt-4`} data-split="">
+      <H className={`display ${(size ?? (as === "h1" ? "page" : "section")) === "page" ? "h-page" : "h-section"} mt-4`} data-split="">
         {title}
       </H>
       {lead ? (

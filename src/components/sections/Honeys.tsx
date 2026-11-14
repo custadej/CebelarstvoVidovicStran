@@ -33,7 +33,7 @@ function HoneyPanel({ h }: { h: Honey }) {
         </p>
         <h3 className="display mt-3 text-[clamp(1.9rem,6vw,2.75rem)]">{h.name}</h3>
         <p className="mt-3 max-w-[48ch]">{h.intro}</p>
-        <dl className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-3">
+        <dl className="mt-5 grid gap-x-6 gap-y-3 lg:grid-cols-3">
           {h.facts.slice(0, 3).map((f) => (
             <div key={f.label} className="border-t border-crta pt-2">
               <dt className="eyebrow !text-[0.75rem]">{f.label}</dt>
@@ -89,7 +89,7 @@ export function Packaging() {
     <div className="grid gap-4 md:grid-cols-2">
       <div className="rounded-3xl bg-med p-6 text-smola md:p-8" data-reveal="">
         <p className="eyebrow !text-smola">Pakiranja</p>
-        <p className="num mt-3 text-[clamp(1.5rem,6.4vw,2.6rem)] leading-none whitespace-nowrap">
+        <p className="num mt-3 text-[clamp(1.5rem,6.4vw,2.6rem)] leading-none whitespace-nowrap md:text-[clamp(1.35rem,2.9vw,2.6rem)]">
           250 g <span className="opacity-50">·</span> 450 g <span className="opacity-50">·</span> 900 g
         </p>
         <p className="mt-3 max-w-[38ch]">Stekleni kozarci, večje količine po dogovoru. Na voljo so tudi darilne škatle.</p>

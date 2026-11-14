@@ -83,11 +83,11 @@ export function Footer() {
 
         <div data-foot-rule="" className="h-px bg-white/12" />
 
-        <div data-foot-bottom="" className="grid gap-3 py-6 text-[0.95rem] md:grid-cols-[1fr_auto_1fr] md:items-center">
+        <div data-foot-bottom="" className="grid gap-3 py-6 text-[0.95rem] lg:grid-cols-[1fr_auto_1fr] lg:items-center">
           <p className="muted">
             © {new Date().getFullYear()} {site.name}
           </p>
-          <p className="flex gap-6 md:justify-self-center">
+          <p className="flex gap-6 lg:justify-self-center">
             <Link href="/zasebnost/" className="muted transition-colors duration-200 ease-[var(--ease-ui)] hover:text-akacija">
               Zasebnost
             </Link>
@@ -95,7 +95,7 @@ export function Footer() {
               Pravno obvestilo
             </Link>
           </p>
-          <p className="muted md:justify-self-end">
+          <p className="muted whitespace-nowrap lg:justify-self-end">
             Spletno stran izdelal{" "}
             <a href={credit.href} target="_blank" rel="noopener" className="credit">
               <span aria-hidden="true" className="hex credit-mark" />

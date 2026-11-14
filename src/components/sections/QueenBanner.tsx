@@ -17,7 +17,7 @@ export function QueenBanner() {
             <p className="mt-4 max-w-[46ch]">
               Oplojene in označene matice kranjske čebele, vzrejene pod nadzorom Kmetijskega inštituta Slovenije. Osebni prevzem ali po pošti, naslednji dan pri vas.
             </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-6 flex flex-col gap-3 whitespace-nowrap sm:flex-row sm:flex-wrap sm:items-center">
               <Link href="/matice/" className="btn btn-med">
                 Vse o maticah <Arrow />
               </Link>
