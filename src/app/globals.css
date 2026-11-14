@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-vosek: #f6efdf;
+  --color-papir: #fffbf2;
+  --color-smola: #1f1711;
+  --color-hoja: #20362b;
+  --color-med: #d4861b;
+  --color-kostanj: #8c4a14;
+  --color-akacija: #f1cb6b;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  --ease-ui: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html {
+  background: var(--color-vosek);
+  color: var(--color-smola);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
