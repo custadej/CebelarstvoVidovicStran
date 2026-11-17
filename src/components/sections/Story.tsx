@@ -47,7 +47,7 @@ export function Story() {
                 Čebelarstva sem se učil pri čebelarju Janku Pislaku, kjer sem bil od leta 1998 redno zaposlen. Leta 2014 sem začel na svojem: s prvimi 60 panji in
                 prevoznim čebelnjakom, ki smo ga izdelali doma.
               </p>
-              <p>Danes čebelnjaki stojijo v Halozah. Pri delu pomagajo domači in prijatelji.</p>
+              <p>Danes čebelnjaki stojijo doma na Dravskem polju, v Halozah in v Prekmurju. Pri delu pomagajo domači in prijatelji.</p>
             </div>
             <blockquote className="display mt-6 max-w-[22ch] border-l-4 border-med pl-5 text-[clamp(1.4rem,4.4vw,1.9rem)] leading-[1.15]" data-reveal="">
               „{story.quote}“

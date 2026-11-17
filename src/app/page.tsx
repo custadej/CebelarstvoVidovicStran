@@ -9,12 +9,12 @@ import { pageMeta } from "@/lib/meta";
 
 export const metadata = {
   ...pageMeta({
-    title: "Čebelarstvo Vidovič | Domač med iz Haloz in matice čebel",
+    title: "Čebelarstvo Vidovič | Domač med in matice čebel z Dravskega polja",
     description:
-      "Čebelarstvo Vidovič, Apače pri Kidričevem: domač med iz Haloz (cvetlični, akacijev, lipov, kostanjev, gozdni), državni prvak 2019, ter oplojene matice kranjske čebele, tudi po pošti. Pokličite Jožeta: 041 579 827.",
+      "Čebelarstvo Vidovič, Apače pri Kidričevem na Dravskem polju: domač med iz naših čebelnjakov na Dravskem polju, v Halozah in v Prekmurju (cvetlični, akacijev, lipov, kostanjev, gozdni) ter oplojene matice kranjske čebele, tudi po pošti. Pokličite Jožeta: 041 579 827.",
     path: "/",
   }),
-  title: { absolute: "Čebelarstvo Vidovič | Domač med iz Haloz in matice čebel" },
+  title: { absolute: "Čebelarstvo Vidovič | Domač med in matice čebel z Dravskega polja" },
 };
 
 // Customer first: what we sell (med), what else, why trust us, who we are, how to reach us. Queens live on /matice (nav, hero line, footer).

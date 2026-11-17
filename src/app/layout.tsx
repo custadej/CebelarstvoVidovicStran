@@ -35,7 +35,7 @@ const live = process.env.NEXT_PUBLIC_SITE_LIVE === "1";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} | Med in matice iz Haloz`, template: `%s | ${site.name}` },
+  title: { default: `${site.name} | Domač med in matice čebel`, template: `%s | ${site.name}` },
   applicationName: site.name,
   authors: [{ name: site.owner }],
   formatDetection: { telephone: true, address: true, email: true },

@@ -32,4 +32,7 @@ export const nav = [
 
 export const credit = { name: "Tadej Čuš", href: "https://cus.si" } as const;
 
+// Header hides while scrolling down and returns on scroll up. Being tried out (2026-11-17); false = always visible.
+export const headerAutoHide = true;
+
 export const formEnabled = process.env.NEXT_PUBLIC_FORM_ENABLED === "1";

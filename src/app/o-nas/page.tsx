@@ -9,7 +9,7 @@ import { breadcrumbSchema } from "@/lib/schema";
 export const metadata = pageMeta({
   title: "O nas: Jože Vidovič, čebelar iz Apač pri Kidričevem",
   description:
-    "Zgodba Jožeta Vidoviča: s čebelami od konca osnovne šole, poklicno od leta 1998, samostojno od 2014. Čebelnjaki v Halozah, vzreja matic, državni prvak za cvetlični med 2019.",
+    "Zgodba Jožeta Vidoviča: s čebelami od konca osnovne šole, poklicno od leta 1998, samostojno od 2014. Čebelnjaki na Dravskem polju, v Halozah in v Prekmurju, vzreja matic, državni prvak za cvetlični med 2019.",
   path: "/o-nas/",
 });
 
@@ -35,7 +35,7 @@ export default function Page() {
             {story.paragraphs.map((p) => (
               <p key={p}>{p}</p>
             ))}
-            <p>Pri delu pomagajo domači in prijatelji. Čebelnjaki stojijo v Halozah, na akacijevo pašo jih peljemo tudi v Prekmurje.</p>
+            <p>Pri delu pomagajo domači in prijatelji. Čebelnjaki stojijo doma na Dravskem polju, v Halozah in v Prekmurju.</p>
           </div>
           <div>
             <figure data-reveal="">
@@ -57,7 +57,7 @@ export default function Page() {
       <section className="section bg-papir">
         <div className="wrap">
           <h2 className="display h-section" data-split="">
-            Čebelnjaki <em>v Halozah.</em>
+            Čebelnjaki <em>doma in na paši.</em>
           </h2>
           <div className="mt-10 grid gap-3 md:grid-cols-3 md:gap-4">
             <Photo slug="cebelnjak-fronta" alt="Pisane panjske končnice prevoznega čebelnjaka" sizes="(min-width: 768px) 66vw, 92vw" className="frame aspect-[3/2] md:col-span-2" parallax />

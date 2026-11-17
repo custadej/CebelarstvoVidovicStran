@@ -6,7 +6,7 @@ import { pageMeta } from "@/lib/meta";
 import { breadcrumbSchema } from "@/lib/schema";
 
 export const metadata = pageMeta({
-  title: "Domač med iz Haloz: cvetlični, akacijev, lipov, kostanjev, gozdni, hojev",
+  title: "Domač med: cvetlični, akacijev, lipov, kostanjev, gozdni, hojev",
   description:
     "Domač slovenski med neposredno od čebelarja: cvetlični (državni prvak 2019), akacijev, lipov, kostanjev, gozdni in hojev. Kozarci 250 g, 450 g in 900 g. Apače pri Kidričevem, dostava Ptuj in Maribor po dogovoru.",
   path: "/med/",
@@ -19,10 +19,10 @@ export default function Page() {
         eyebrow="Med"
         title={
           <>
-            Med iz neokrnjene <em>narave Haloz.</em>
+            Med iz naših <em>čebelnjakov.</em>
           </>
         }
-        lead="Šest vrst medu s haloških travnikov in gozdov ter z akacijeve paše v Prekmurju. Točim in polnim ga sam."
+        lead="Šest vrst medu iz čebelnjakov doma na Dravskem polju, v Halozah in v Prekmurju. Točim in polnim ga sam."
         image="medovi-pet"
         imageAlt="Pet kozarcev medu Čebelarstva Vidovič v vrsti"
         crumbs={[{ href: "/", label: "Domov" }, { label: "Med" }]}

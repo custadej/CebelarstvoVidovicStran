@@ -199,3 +199,13 @@ A second bug surfaced while fixing this: wrapping rails in a new element made th
 ### Lighthouse (mobile, simulated slow 4G, local)
 
 `/` 91 / 100 / 100 / 100, LCP 3.4 s, CLS 0. `/priznanja/` 89 / 100 / 100 / 100, LCP 3.7 s.
+
+## Session 4 (2026-11-17): hero, motion, header trial
+
+- **Hero rebuilt.** Photo without a frame: on phones full width on top, fading into the dark; on desktop it bleeds off the right edge (max 780 CSS px, 3:2 kept so no jar is cropped) and fades on the left, top and bottom. Removed: the "Državni prvak 2019" seal (Tadej: first thing seen was "2019", felt old; awards have their own section) and the line "Ste čebelar? Matice čebel" (nav pill is enough).
+- **Headline** "Domač med, *pridelan z ljubeznijo.*" (echoes his motto "Kar delaš, delaj z ljubeznijo."). Lead names all three apiary places. Eyebrow adds "Dravsko polje" so nobody drives to Zgornje Apače; on phones only the place is shown.
+- **Trust row:** number above label with a hairline on the left, instead of a big number beside a two-line label (looked misaligned).
+- **Honey drip** over the bottom edge of the hero (CSS keyframes, transform/opacity only, static with reduced motion).
+- **Honey thread lag fixed:** before, the line used `scrub: 0.5` (lagging behind Lenis) while the drop used raw progress, and the reveal animated `clip-path` on a page-tall SVG (repaint every frame). Now one ScrollTrigger drives both from the same progress, the reveal is two opposite translations (composite only), and the path's x is sampled once into a table.
+- **Bees** (Motion.tsx, original SVG): one flies over the hero photo at most 5 times per visit, 14–22 s apart, only while the hero is in view; tapping the honeycomb lets one out of the tapped cell. MotionPath `autoRotate`, body flipped when heading left so it never flies upside down. None with reduced motion.
+- **Header auto-hide is a trial** (`headerAutoHide` in `src/lib/site.ts`): hides after 140 px when scrolling down, returns on any scroll up, never while the menu is open or something in it has keyboard focus. This bends rule 7a (phone always in the header); one scroll up brings it back. Tadej decides after trying it.

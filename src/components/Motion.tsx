@@ -3,6 +3,17 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
+// A small bee facing right (+x), so autoRotate along a motion path points its head forward.
+const BEE_SVG = `<svg viewBox="-20 -20 40 40"><defs><clipPath id="bee-clip"><ellipse cx="-1" cy="0" rx="10.5" ry="7.2"/></clipPath></defs><g class="bee-body">
+<ellipse class="bee-wing" cx="-3" cy="-8" rx="5" ry="8.5" fill="#fff" fill-opacity=".5" stroke="#fff" stroke-opacity=".85" stroke-width=".8"/>
+<path d="M-15.5 0 -10.5 -1.7v3.4z" fill="#1f1711"/>
+<ellipse cx="-1" cy="0" rx="10.5" ry="7.2" fill="#f2b90f"/>
+<g clip-path="url(#bee-clip)" fill="#1f1711"><rect x="-6.5" y="-8" width="3" height="16"/><rect x="-0.5" y="-8" width="3" height="16"/></g>
+<circle cx="10" cy="0" r="5" fill="#1f1711"/><circle cx="12" cy="-1.6" r="1.2" fill="#fff"/>
+<path d="M12 -4q3 -5 6.5 -5M10 -4.6q1 -5.4 4 -6.6" stroke="#1f1711" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+<ellipse class="bee-wing" cx="2" cy="-8.5" rx="5.5" ry="9" fill="#fff" fill-opacity=".7" stroke="#fff" stroke-width=".8"/>
+</g></svg>`;
+
 // All scroll and pointer motion lives here. Markup is complete and visible without it:
 // with reduced motion (or no JS) nothing in this file runs and the page is static.
 export function Motion() {
@@ -15,13 +26,14 @@ export function Motion() {
     const start = async () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      const [{ gsap }, { ScrollTrigger }, { SplitText }] = await Promise.all([
+      const [{ gsap }, { ScrollTrigger }, { SplitText }, { MotionPathPlugin }] = await Promise.all([
         import("gsap"),
         import("gsap/ScrollTrigger"),
         import("gsap/SplitText"),
+        import("gsap/MotionPathPlugin"),
       ]);
       if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger, SplitText);
+      gsap.registerPlugin(ScrollTrigger, SplitText, MotionPathPlugin);
       await document.fonts.ready;
       if (cancelled) return;
 
@@ -100,47 +112,63 @@ export function Motion() {
           });
         });
 
-        // Honey thread: drawn by scroll, with a drop riding its tip
+        // Honey thread: drawn by scroll, with a drop riding its tip. The line and the drop are driven by the same
+        // progress value in the same frame (no extra scrub lag on top of Lenis), and the reveal only moves two
+        // layers, so nothing is repainted while scrolling.
         const thread = document.querySelector<HTMLElement>("[data-thread]");
         const threadRoot = document.querySelector<HTMLElement>("[data-thread-root]");
         if (thread && threadRoot) {
-          const svg = thread.querySelector("svg");
           const path = thread.querySelector<SVGPathElement>("[data-thread-path]");
+          const clip = thread.querySelector<HTMLElement>("[data-thread-clip]");
+          const inner = thread.querySelector<HTMLElement>("[data-thread-inner]");
           const drop = thread.querySelector<HTMLElement>("[data-thread-drop]");
-          if (svg && path && drop) {
+          if (path && clip && inner && drop) {
+            // x of the path at each of N steps down its height, sampled once
+            const N = 240;
             const total = path.getTotalLength();
-            const xAt = (yUnit: number) => {
-              let lo = 0;
+            const xs = new Float32Array(N + 1);
+            for (let i = 0, len = 0; i <= N; i++) {
+              const y = (i / N) * 1000;
+              let lo = len;
               let hi = total;
-              for (let i = 0; i < 14; i++) {
+              for (let k = 0; k < 16; k++) {
                 const mid = (lo + hi) / 2;
-                if (path.getPointAtLength(mid).y < yUnit) lo = mid;
+                if (path.getPointAtLength(mid).y < y) lo = mid;
                 else hi = mid;
               }
-              return path.getPointAtLength(lo).x;
-            };
+              len = lo;
+              xs[i] = path.getPointAtLength(lo).x / 20;
+            }
+            const setClip = gsap.quickSetter(clip, "y", "px");
+            const setInner = gsap.quickSetter(inner, "y", "px");
             const setX = gsap.quickSetter(drop, "x", "px");
             const setY = gsap.quickSetter(drop, "y", "px");
+            let h = thread.offsetHeight;
+            let w = thread.offsetWidth;
+            const render = (p: number) => {
+              const hidden = (1 - p) * h;
+              setClip(-hidden);
+              setInner(hidden);
+              const f = p * N;
+              const i = Math.floor(f);
+              const x = i >= N ? xs[N] : xs[i] + (xs[i + 1] - xs[i]) * (f - i);
+              setY(p * h);
+              setX(x * w);
+            };
             gsap.set(drop, { opacity: 1 });
-            gsap.fromTo(
-              svg,
-              { clipPath: "inset(0 0 100% 0)" },
-              {
-                clipPath: "inset(0 0 0% 0)",
-                ease: "none",
-                scrollTrigger: {
-                  trigger: threadRoot,
-                  start: "top 62%",
-                  end: "bottom 78%",
-                  scrub: 0.5,
-                  onUpdate: (self) => {
-                    const rect = thread.getBoundingClientRect();
-                    setY(self.progress * rect.height);
-                    setX((xAt(self.progress * 1000) / 20) * rect.width);
-                  },
-                },
+            render(0);
+            ScrollTrigger.create({
+              trigger: threadRoot,
+              start: "top 62%",
+              end: "bottom 78%",
+              onRefresh: (self) => {
+                h = thread.offsetHeight;
+                w = thread.offsetWidth;
+                render(self.progress);
               },
-            );
+              onUpdate: (self) => render(self.progress),
+            });
+            undo.push(() => gsap.set([clip, inner], { clearProps: "transform" }));
           }
         }
 
@@ -180,6 +208,131 @@ export function Motion() {
         }
       });
       undo.push(() => ctx.revert());
+
+      // Bees. One drifts through the hero now and then (over the photo, never more than a few times per visit);
+      // tapping the honeycomb lets one out of the cell. The bee turns along its path and never flies upside down.
+      const rand = gsap.utils.random;
+      const flights = new Set<gsap.core.Tween>();
+      const makeBee = (host?: HTMLElement) => {
+        const el = document.createElement("div");
+        el.className = host ? "bee bee-local" : "bee";
+        el.setAttribute("aria-hidden", "true");
+        el.innerHTML = BEE_SVG;
+        (host ?? document.body).appendChild(el);
+        return el;
+      };
+      const fly = (el: HTMLElement, path: { x: number; y: number }[], duration: number, done?: () => void) => {
+        const body = el.querySelector<SVGGElement>(".bee-body");
+        gsap.set(el, { x: path[0].x, y: path[0].y });
+        const tween = gsap.to(el, {
+          motionPath: { path, curviness: 1.3, autoRotate: true },
+          duration,
+          ease: "sine.inOut",
+          onUpdate: () => {
+            const angle = (Number(gsap.getProperty(el, "rotation")) * Math.PI) / 180;
+            if (body) body.style.transform = Math.cos(angle) < 0 ? "scaleY(-1)" : "";
+          },
+          onComplete: () => {
+            flights.delete(tween);
+            el.remove();
+            done?.();
+          },
+        });
+        flights.add(tween);
+        return tween;
+      };
+      undo.push(() => {
+        flights.forEach((t) => t.kill());
+        flights.clear();
+        document.querySelectorAll(".bee").forEach((b) => b.remove());
+      });
+
+      const sky = document.querySelector<HTMLElement>("[data-bee-sky]");
+      if (sky) {
+        let inView = true;
+        let count = 0;
+        let timer = 0;
+        const io = new IntersectionObserver(([entry]) => (inView = entry.isIntersecting), { threshold: 0.3 });
+        io.observe(sky);
+        const launch = () => {
+          if (inView && document.visibilityState === "visible" && count < 5) {
+            count++;
+            const w = sky.clientWidth;
+            const h = sky.clientHeight;
+            const wide = w >= 1024;
+            // stay over the photo: the right half on wide screens, the top band on phones
+            const x0 = wide ? w * 0.52 : w * 0.08;
+            const x1 = wide ? w - 60 : w * 0.92;
+            const y0 = wide ? h * 0.18 : h * 0.07;
+            const y1 = wide ? h * 0.72 : h * 0.36;
+            const fromRight = wide || Math.random() < 0.5;
+            const path = [
+              { x: fromRight ? w + 40 : -40, y: rand(y0, y1) },
+              { x: rand(x0, x1), y: rand(y0, y1) },
+              { x: rand(x0, x1), y: rand(y0, y1) },
+              { x: rand(x0, x1), y: rand(y0, y1) },
+              wide ? { x: rand(x0, x1), y: -60 } : { x: fromRight ? -40 : w + 40, y: rand(y0, y1) },
+            ];
+            fly(makeBee(sky), path, rand(7, 9.5));
+          }
+          timer = window.setTimeout(launch, rand(14000, 22000));
+        };
+        timer = window.setTimeout(launch, 2400);
+        undo.push(() => {
+          window.clearTimeout(timer);
+          io.disconnect();
+        });
+      }
+
+      let combBusy = false;
+      const onCombClick = (e: MouseEvent) => {
+        if (e.detail === 0 || combBusy) return; // keyboard activation, or a bee is already on its way
+        if (!(e.target as Element | null)?.closest("[data-bee-source]")) return;
+        combBusy = true;
+        const { clientX: x, clientY: y } = e;
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        const bee = makeBee();
+        const svg = bee.querySelector("svg");
+        if (svg) gsap.fromTo(svg, { scale: 0.15 }, { scale: 1, duration: 0.45, ease: "back.out(2.2)" });
+        fly(
+          bee,
+          [
+            { x, y },
+            { x: x + dir * rand(30, 70), y: y - rand(50, 90) },
+            { x: x + dir * rand(110, 200), y: y - rand(30, 140) },
+            { x: x + dir * rand(240, 380), y: -60 },
+          ],
+          rand(2.4, 3.1),
+          () => (combBusy = false),
+        );
+      };
+      document.addEventListener("click", onCombClick);
+      undo.push(() => document.removeEventListener("click", onCombClick));
+
+      // Header that steps aside while reading down and comes back on the first scroll up (flag in src/lib/site.ts).
+      const bar = document.querySelector<HTMLElement>("[data-autohide]");
+      if (bar) {
+        let last = window.scrollY;
+        let raf = 0;
+        const check = () => {
+          raf = 0;
+          const y = window.scrollY;
+          const dy = y - last;
+          if (y > 140 && Math.abs(dy) < 8) return;
+          const busy = bar.querySelector('[aria-expanded="true"], :focus-visible') !== null;
+          bar.toggleAttribute("data-hidden", y > 140 && dy > 0 && !busy);
+          last = y;
+        };
+        const onScroll = () => {
+          if (!raf) raf = requestAnimationFrame(check);
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        undo.push(() => {
+          window.removeEventListener("scroll", onScroll);
+          cancelAnimationFrame(raf);
+          bar.removeAttribute("data-hidden");
+        });
+      }
 
       if (fine) {
         // Magnetic CTAs

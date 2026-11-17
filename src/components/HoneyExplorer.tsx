@@ -99,7 +99,7 @@ export function HoneyExplorer({ items, panels, initial = 0 }: { items: Item[]; p
 
   return (
     <>
-      <div className="comb honeycomb relative aspect-[5/2] w-full md:aspect-[4/1]" data-has-active="">
+      <div className="comb honeycomb relative aspect-[5/2] w-full md:aspect-[4/1]" data-has-active="" data-bee-source="">
         <svg viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} className="honeycomb-svg absolute inset-0 h-full w-full" aria-hidden="true">
           {cells.map((cell, i) => (
             <g key={i} className="comb-hex" data-on={cell.index === active ? "" : undefined} onClick={() => selectFromComb(cell.index)}>

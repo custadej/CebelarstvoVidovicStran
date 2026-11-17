@@ -9,7 +9,7 @@ export const businessSchema = {
   "@id": id,
   name: site.name,
   description:
-    "Čebelarstvo v Apačah pri Kidričevem: med iz Haloz, vzreja in prodaja oplojenih, označenih matic kranjske čebele, matični mleček in drugi čebelji pridelki.",
+    "Čebelarstvo v Apačah pri Kidričevem na Dravskem polju: domač med iz čebelnjakov na Dravskem polju, v Halozah in v Prekmurju, vzreja in prodaja oplojenih, označenih matic kranjske čebele, matični mleček in drugi čebelji pridelki.",
   url: `${site.url}/`,
   telephone: site.phone.e164,
   email: site.email,

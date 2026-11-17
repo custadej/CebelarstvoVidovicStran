@@ -2,13 +2,13 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { MobileMenu } from "@/components/MobileMenu";
 import { PhoneIcon } from "@/components/ui";
-import { nav, site } from "@/lib/site";
+import { headerAutoHide, nav, site } from "@/lib/site";
 
 // One bar, one centre line: the logo box, the links and the call button are all 48 px tall and centred in the bar.
 // Left and right inner padding are equal; the links are centred in the bar itself (grid 1fr / auto / 1fr).
 export function Header() {
   return (
-    <header className="fixed inset-x-3 top-3 z-50 md:inset-x-5 md:top-4">
+    <header className="fixed inset-x-3 top-3 z-50 md:inset-x-5 md:top-4" data-autohide={headerAutoHide ? "" : undefined}>
       <div
         data-bar=""
         className="mx-auto flex h-[var(--header-h)] max-w-[1280px] items-center justify-between gap-2 rounded-full bg-papir/95 px-2 shadow-[0_10px_40px_-18px_rgb(31_23_17/0.6)] backdrop-blur lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-2.5"

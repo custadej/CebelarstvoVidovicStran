@@ -46,6 +46,7 @@ Sources:
 - Family business in the sense that family and friends help. **No names of family members.** — confirmed (TADEJ). Wife's name stays off the site.
 - Pislak: where he worked and learned before starting on his own (TADEJ: "se mi zdi"). The name is in Jože's own public text; keep the mention, flag for Jože's review at handover.
 - Apiaries stand in Haloze (many FB posts: "naši čebelnjaki v Halozah"); acacia pasture also in Prekmurje ("Čebelji vlak za Prekmurje"). — verified
+- **Apiaries in three places: at home on Dravsko polje (Apače), in Haloze and in Prekmurje.** He lives and works on Dravsko polje; "Domač med iz Haloz" as a general line is wrong (Jože: "iz Haloz??"). Use all three places for general statements; keep Haloze only for honeys that really come from there (cvetlični, kostanjev). — confirmed (TADEJ, 2026-11-17)
 - Visits kindergartens/schools to present bees (Videm pri Ptuju, Kidričevo; Dan slovenske hrane). Hosted beekeepers from Croatian Zagorje to show his queen-rearing method. — verified (FB)
 
 Safe derived statements: beekeeping professionally since 1998; own apiary since 2014; queen rearing since 2015.
