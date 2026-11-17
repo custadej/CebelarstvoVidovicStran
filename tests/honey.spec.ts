@@ -67,12 +67,13 @@ for (const vp of viewports) {
       }
     });
 
-    test("home page has no sticky call bar, no queen banner, one mention of the title in the hero", async ({ page }) => {
+    test("home page has no sticky call bar, no queen banner, no dated title in the hero", async ({ page }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
-      await expect(page.getByText("Ste čebelar? Matice čebel.")).toHaveCount(0);
+      await expect(page.getByText("Ste čebelar?")).toHaveCount(0);
       const hero = page.locator("main section").first();
-      expect((await hero.innerText()).match(/ržavni prvak/g)?.length).toBe(1);
+      // the first screen should not open with an old year (Tadej, 2026-11-17); awards have their own section
+      expect(await hero.innerText()).not.toMatch(/ržavni prvak|2019/);
       const fixedBottom = await page.evaluate(() =>
         [...document.querySelectorAll("body *")].filter((el) => {
           const s = getComputedStyle(el);
