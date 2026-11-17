@@ -1,9 +1,9 @@
 # Čebelarstvo Vidovič – website
 
 New website for **Čebelarstvo Vidovič**, a family beekeeping business from Apače near Lovrenc na Dravskem polju (Slovenia): honey, bee products and queen bees (matice). Replaces the old Joomla site at www.cebelarstvo-vidovic.si.
-School project for the KIDS course. Design and development: [cus.si](https://cus.si).
+Design and development: [cus.si](https://cus.si).
 
-Live preview: https://custadej.github.io/CebelarstvoVidovic/
+Live preview: https://custadej.github.io/CebelarstvoVidovicStran/
 
 The goal of the site is simple: visitors call the beekeeper. It is not a webshop – no cart, no checkout, the phone number is always in the header.
 
