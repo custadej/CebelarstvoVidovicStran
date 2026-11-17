@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
   env: { NEXT_PUBLIC_BASE_PATH: basePath },
   allowedDevOrigins: ['192.168.1.7'],
   images: { unoptimized: true },
+  // Each language has its own root layout, so the 404 page is global (src/app/global-not-found.tsx).
+  experimental: { globalNotFound: true },
   turbopack: {
     rules: {
       "*.css": {

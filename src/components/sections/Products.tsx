@@ -2,9 +2,41 @@ import Link from "next/link";
 import { Photo } from "@/components/Photo";
 import { Rail } from "@/components/Rail";
 import { Arrow, SectionHead } from "@/components/ui";
-import { products } from "@/data/content";
+import { getContent } from "@/data";
+import { localePath, type Lang } from "@/i18n";
 
-export function ProductList({ detailed = false }: { detailed?: boolean }) {
+const T = {
+  sl: {
+    eyebrow: "Ostali čebelji pridelki",
+    title: (
+      <>
+        Panj da več <em>kot med.</em>
+      </>
+    ),
+    all: "Vsi pridelki",
+  },
+  en: {
+    eyebrow: "Other bee products",
+    title: (
+      <>
+        The hive gives <em>more than honey.</em>
+      </>
+    ),
+    all: "All bee products",
+  },
+  de: {
+    eyebrow: "Weitere Bienenprodukte",
+    title: (
+      <>
+        Der Bienenstock gibt <em>mehr als Honig.</em>
+      </>
+    ),
+    all: "Alle Bienenprodukte",
+  },
+};
+
+export function ProductList({ lang, detailed = false }: { lang: Lang; detailed?: boolean }) {
+  const { products } = getContent(lang);
   if (detailed) {
     return (
       <ul className="grid gap-6">
@@ -22,10 +54,10 @@ export function ProductList({ detailed = false }: { detailed?: boolean }) {
     );
   }
   return (
-    <Rail label="Ostali čebelji pridelki" className="-mr-7 gap-4 pr-7 md:mr-0 md:grid md:grid-cols-5 md:gap-4 md:overflow-visible md:pr-0">
+    <Rail lang={lang} label={T[lang].eyebrow} className="-mr-7 gap-4 pr-7 md:mr-0 md:grid md:grid-cols-5 md:gap-4 md:overflow-visible md:pr-0">
       {products.map((p) => (
         <div key={p.id} role="listitem" className="w-[40vw] max-w-[210px] md:w-auto md:max-w-none">
-          <Link href={`/cebelji-pridelki/#${p.id}`} className="group block">
+          <Link href={localePath(lang, `/cebelji-pridelki/#${p.id}`)} className="group block">
             <Photo
               slug={p.image}
               alt={p.alt}
@@ -42,26 +74,23 @@ export function ProductList({ detailed = false }: { detailed?: boolean }) {
   );
 }
 
-export function Products() {
+export function Products({ lang }: { lang: Lang }) {
+  const t = T[lang];
   return (
     <section id="pridelki" className="section bg-papir">
       <div className="wrap">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <SectionHead
             n="02"
-            eyebrow="Ostali čebelji pridelki"
-            title={
-              <>
-                Panj da več <em>kot med.</em>
-              </>
-            }
+            eyebrow={t.eyebrow}
+            title={t.title}
           />
-          <Link href="/cebelji-pridelki/" className="arrow-link">
-            Vsi pridelki <Arrow />
+          <Link href={localePath(lang, "/cebelji-pridelki/")} className="arrow-link">
+            {t.all} <Arrow />
           </Link>
         </div>
         <div className="mt-8">
-          <ProductList />
+          <ProductList lang={lang} />
         </div>
       </div>
     </section>

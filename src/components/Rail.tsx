@@ -1,9 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import type { Lang } from "@/i18n";
+import { ui } from "@/i18n/ui";
 
 type Props = {
   children: ReactNode;
+  lang: Lang;
   label: string;
   role?: "tablist" | "list";
   className?: string;
@@ -16,7 +19,7 @@ type Props = {
 // A horizontal rail that makes it obvious it scrolls: the next item peeks in, the edges fade, it snaps,
 // it nudges once when first seen, it has dots, arrows on wider screens and mouse drag.
 // All of that only appears while the content actually overflows; when everything fits (desktop grid) it is inert.
-export function Rail({ children, label, role = "list", className = "", indicator = "dots", nudge = true }: Props) {
+export function Rail({ children, lang, label, role = "list", className = "", indicator = "dots", nudge = true }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [state, setState] = useState({ overflow: false, start: true, end: false, index: 0, count: 0 });
 
@@ -155,12 +158,12 @@ export function Rail({ children, label, role = "list", className = "", indicator
             ))}
           </div>
           <div className="hidden items-center gap-2 md:flex">
-            <button type="button" className="rail-arrow" onClick={() => step(-1)} disabled={state.start} aria-label="Prejšnji">
+            <button type="button" className="rail-arrow" onClick={() => step(-1)} disabled={state.start} aria-label={ui[lang].prev}>
               <svg width="18" height="12" viewBox="0 0 22 14" aria-hidden="true">
                 <path d="M21 7H2m0 0 5.5-5.5M2 7l5.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
               </svg>
             </button>
-            <button type="button" className="rail-arrow" onClick={() => step(1)} disabled={state.end} aria-label="Naslednji">
+            <button type="button" className="rail-arrow" onClick={() => step(1)} disabled={state.end} aria-label={ui[lang].next}>
               <svg width="18" height="12" viewBox="0 0 22 14" aria-hidden="true">
                 <path d="M1 7h19m0 0-5.5-5.5M20 7l-5.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
               </svg>

@@ -3,8 +3,11 @@ import Link from "next/link";
 import { Photo } from "@/components/Photo";
 import { Strip } from "@/components/ui";
 import type { ImageSlug } from "@/data/content";
+import { localePath, type Lang } from "@/i18n";
+import { ui } from "@/i18n/ui";
 
 export function PageHero({
+  lang,
   eyebrow,
   title,
   lead,
@@ -14,6 +17,7 @@ export function PageHero({
   crumbs,
   children,
 }: {
+  lang: Lang;
   eyebrow: string;
   title: ReactNode;
   lead: ReactNode;
@@ -30,13 +34,13 @@ export function PageHero({
         <div className="absolute inset-0 bg-gradient-to-t from-smola via-smola/20 to-smola/30 lg:bg-gradient-to-r lg:from-smola lg:via-smola/30 lg:to-transparent" />
       </div>
       <div className="wrap relative -mt-24 pb-14 lg:mt-0 lg:flex lg:min-h-[78svh] lg:flex-col lg:justify-end lg:pt-44 lg:pb-20">
-        <nav aria-label="Drobtinice" className="rise text-[0.95rem]" style={{ "--i": 0 } as React.CSSProperties}>
+        <nav aria-label={ui[lang].crumbs} className="rise text-[0.95rem]" style={{ "--i": 0 } as React.CSSProperties}>
           <ol className="flex flex-wrap gap-2">
-            {crumbs.map((c, i) => (
+            {[{ href: "/", label: ui[lang].home }, ...crumbs].map((c, i) => (
               <li key={c.label} className="flex items-center gap-2">
                 {i > 0 ? <span aria-hidden="true">/</span> : null}
                 {c.href ? (
-                  <Link href={c.href} className="link">
+                  <Link href={localePath(lang, c.href)} className="link">
                     {c.label}
                   </Link>
                 ) : (

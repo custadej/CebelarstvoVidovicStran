@@ -21,15 +21,6 @@ export const site = {
   tagline: "Kar delaš, delaj z ljubeznijo.",
 } as const;
 
-export const nav = [
-  { href: "/med/", label: "Med" },
-  { href: "/cebelji-pridelki/", label: "Pridelki" },
-  { href: "/o-nas/", label: "O nas" },
-  { href: "/priznanja/", label: "Priznanja" },
-  { href: "/kontakt/", label: "Kontakt" },
-  { href: "/matice/", label: "Matice čebel" },
-] as const;
-
 export const credit = { name: "Tadej Čuš", href: "https://cus.si" } as const;
 
 // Header hides while scrolling down and returns on scroll up. Being tried out (2026-11-17); false = always visible.

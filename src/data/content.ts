@@ -191,14 +191,9 @@ export const honeys: Honey[] = [
   },
 ];
 
-export const products: {
-  id: string;
-  name: string;
-  text: string;
-  detail: string;
-  image: ImageSlug;
-  alt: string;
-}[] = [
+export type Product = { id: string; name: string; text: string; detail: string; image: ImageSlug; alt: string };
+
+export const products: Product[] = [
   {
     id: "maticni-mlecek",
     name: "Matični mleček",
@@ -315,15 +310,16 @@ export const story = {
   ],
 };
 
-export type Award = { event: string; honey: string; medal: Medal };
+export type AwardEvent = "agra" | "dsk" | "czs" | "dsk-znak";
+export type Award = { event: AwardEvent; honey: string; medal: Medal };
 export const awardYears: { year: string; awards: Award[]; image?: ImageSlug; imageAlt?: string }[] = [
   {
     year: "2026",
     image: "priznanje-agra-2026-zlata",
     imageAlt: "Zlata medalja AGRA 2026 za cvetlični med Čebelarstva Vidovič",
     awards: [
-      { event: "AGRA", honey: "Cvetlični med", medal: "zlato" },
-      { event: "AGRA", honey: "Akacijev med", medal: "srebro" },
+      { event: "agra", honey: "cvetlicni", medal: "zlato" },
+      { event: "agra", honey: "akacijev", medal: "srebro" },
     ],
   },
   {
@@ -331,12 +327,12 @@ export const awardYears: { year: string; awards: Award[]; image?: ImageSlug; ima
     image: "priznanja-2025",
     imageAlt: "Priznanja AGRA 2025 in Dobrote slovenskih kmetij 2025",
     awards: [
-      { event: "AGRA", honey: "Gozdni med", medal: "zlato" },
-      { event: "AGRA", honey: "Cvetlični med", medal: "srebro" },
-      { event: "AGRA", honey: "Akacijev med", medal: "srebro" },
-      { event: "Dobrote slovenskih kmetij", honey: "Gozdni med", medal: "zlato" },
-      { event: "Dobrote slovenskih kmetij", honey: "Cvetlični med", medal: "srebro" },
-      { event: "Dobrote slovenskih kmetij", honey: "Lipov med", medal: "bron" },
+      { event: "agra", honey: "gozdni", medal: "zlato" },
+      { event: "agra", honey: "cvetlicni", medal: "srebro" },
+      { event: "agra", honey: "akacijev", medal: "srebro" },
+      { event: "dsk", honey: "gozdni", medal: "zlato" },
+      { event: "dsk", honey: "cvetlicni", medal: "srebro" },
+      { event: "dsk", honey: "lipov", medal: "bron" },
     ],
   },
   {
@@ -344,9 +340,9 @@ export const awardYears: { year: string; awards: Award[]; image?: ImageSlug; ima
     image: "priznanja-agra-2024",
     imageAlt: "Tri priznanja AGRA 2024",
     awards: [
-      { event: "AGRA", honey: "Cvetlični med", medal: "zlato" },
-      { event: "AGRA", honey: "Kostanjev med", medal: "bron" },
-      { event: "AGRA", honey: "Akacijev med", medal: "bron" },
+      { event: "agra", honey: "cvetlicni", medal: "zlato" },
+      { event: "agra", honey: "kostanjev", medal: "bron" },
+      { event: "agra", honey: "akacijev", medal: "bron" },
     ],
   },
   {
@@ -354,9 +350,9 @@ export const awardYears: { year: string; awards: Award[]; image?: ImageSlug; ima
     image: "priznanja-agra-2022",
     imageAlt: "Tri zlate medalje AGRA 2022",
     awards: [
-      { event: "AGRA", honey: "Cvetlični med", medal: "zlato" },
-      { event: "AGRA", honey: "Kostanjev med", medal: "zlato" },
-      { event: "AGRA", honey: "Akacijev med", medal: "zlato" },
+      { event: "agra", honey: "cvetlicni", medal: "zlato" },
+      { event: "agra", honey: "kostanjev", medal: "zlato" },
+      { event: "agra", honey: "akacijev", medal: "zlato" },
     ],
   },
   {
@@ -364,9 +360,9 @@ export const awardYears: { year: string; awards: Award[]; image?: ImageSlug; ima
     image: "priznanje-agra-2020",
     imageAlt: "Zlata medalja AGRA 2020 za cvetlični med",
     awards: [
-      { event: "AGRA", honey: "Cvetlični med", medal: "zlato" },
-      { event: "AGRA", honey: "Kostanjev med", medal: "bron" },
-      { event: "Dobrote slovenskih kmetij", honey: "Cvetlični med", medal: "zlato" },
+      { event: "agra", honey: "cvetlicni", medal: "zlato" },
+      { event: "agra", honey: "kostanjev", medal: "bron" },
+      { event: "dsk", honey: "cvetlicni", medal: "zlato" },
     ],
   },
   {
@@ -374,10 +370,10 @@ export const awardYears: { year: string; awards: Award[]; image?: ImageSlug; ima
     image: "priznanje-drzavni-prvak",
     imageAlt: "Listina Čebelarske zveze Slovenije: državni prvak za cvetlični med 2019",
     awards: [
-      { event: "Državno senzorično ocenjevanje medu, ČZS", honey: "Cvetlični med", medal: "naziv" },
-      { event: "Dobrote slovenskih kmetij, znak kakovosti", honey: "Cvetlični med", medal: "naziv" },
-      { event: "Dobrote slovenskih kmetij", honey: "Cvetlični med", medal: "zlato" },
-      { event: "Dobrote slovenskih kmetij", honey: "Gozdni med", medal: "zlato" },
+      { event: "czs", honey: "cvetlicni", medal: "naziv" },
+      { event: "dsk-znak", honey: "cvetlicni", medal: "naziv" },
+      { event: "dsk", honey: "cvetlicni", medal: "zlato" },
+      { event: "dsk", honey: "gozdni", medal: "zlato" },
     ],
   },
   {
@@ -385,9 +381,9 @@ export const awardYears: { year: string; awards: Award[]; image?: ImageSlug; ima
     image: "priznanje-agra-2018",
     imageAlt: "Zlata medalja AGRA 2018 za cvetlični med",
     awards: [
-      { event: "AGRA", honey: "Cvetlični med", medal: "zlato" },
-      { event: "Dobrote slovenskih kmetij", honey: "Cvetlični med", medal: "zlato" },
-      { event: "Dobrote slovenskih kmetij", honey: "Gozdni med", medal: "srebro" },
+      { event: "agra", honey: "cvetlicni", medal: "zlato" },
+      { event: "dsk", honey: "cvetlicni", medal: "zlato" },
+      { event: "dsk", honey: "gozdni", medal: "srebro" },
     ],
   },
   {
@@ -395,9 +391,9 @@ export const awardYears: { year: string; awards: Award[]; image?: ImageSlug; ima
     image: "priznanje-dsk-2017",
     imageAlt: "Zlato priznanje Dobrote slovenskih kmetij 2017 za gozdni med",
     awards: [
-      { event: "AGRA", honey: "Cvetlični med", medal: "zlato" },
-      { event: "Dobrote slovenskih kmetij", honey: "Cvetlični med", medal: "zlato" },
-      { event: "Dobrote slovenskih kmetij", honey: "Gozdni med", medal: "zlato" },
+      { event: "agra", honey: "cvetlicni", medal: "zlato" },
+      { event: "dsk", honey: "cvetlicni", medal: "zlato" },
+      { event: "dsk", honey: "gozdni", medal: "zlato" },
     ],
   },
 ];
@@ -472,9 +468,34 @@ export const faq: { q: string; a: string; queens?: boolean }[] = [
   },
 ];
 
+export const eventLabel: Record<AwardEvent, string> = {
+  agra: "AGRA",
+  dsk: "Dobrote slovenskih kmetij",
+  czs: "Državno senzorično ocenjevanje medu, ČZS",
+  "dsk-znak": "Dobrote slovenskih kmetij, znak kakovosti",
+};
+
 export const medalLabel: Record<Medal, string> = {
   zlato: "Zlato",
   srebro: "Srebro",
   bron: "Bron",
   naziv: "Naziv",
+};
+
+// Text-only translation of everything above. Lists keep the Slovenian order and length; images, colours and
+// slugs come from the Slovenian base (merged in src/data/index.ts).
+export type HoneyText = Pick<Honey, "name" | "short" | "photoAlt" | "tag" | "card" | "intro" | "facts" | "body" | "kitchen" | "seoTitle" | "seoDescription">;
+export type Translation = {
+  honeys: Record<string, HoneyText>;
+  products: Record<string, Pick<Product, "name" | "text" | "detail" | "alt">>;
+  queenFacts: typeof queenFacts;
+  kisResults: typeof kisResults;
+  queenSteps: { title: string; text: string; alt: string }[];
+  story: typeof story;
+  awardImageAlts: Record<string, string>;
+  awardLeads: { title: string; text: string; alt: string }[];
+  reviews: typeof reviews;
+  faq: typeof faq;
+  medalLabel: Record<Medal, string>;
+  eventLabel: Record<AwardEvent, string>;
 };
