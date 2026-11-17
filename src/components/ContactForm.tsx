@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { asset } from "@/lib/site";
 
 type State = "idle" | "sending" | "sent" | "error";
 
@@ -68,7 +69,7 @@ export function ContactForm({ phoneHref, phoneDisplay }: { phoneHref: string; ph
       ) : null}
       <p className="text-[0.95rem] opacity-75">
         Podatke uporabimo samo za odgovor na vaše sporočilo. Več v{" "}
-        <a href="/zasebnost/" className="link">
+        <a href={asset("/zasebnost/")} className="link">
           obvestilu o zasebnosti
         </a>
         .

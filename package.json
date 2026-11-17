@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "screens": "playwright test tests/screens.spec.ts",
     "images": "node scripts/images.mjs",
-    "links": "node scripts/check-links.mjs"
+    "links": "node scripts/check-links.mjs",
+    "deploy:pages": "node scripts/deploy-pages.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

@@ -30,7 +30,8 @@ for (const page of pages) {
       continue;
     }
     if (!ref.startsWith("/")) continue;
-    const clean = decodeURIComponent(ref.split("#")[0].split("?")[0]);
+    const base = process.env.BASE_PATH ?? "";
+    const clean = decodeURIComponent(ref.split("#")[0].split("?")[0]).replace(base && new RegExp(`^${base}(?=/)`), "");
     const target = path.join(OUT, clean);
     checked++;
     const ok = existsSync(target) && (statSync(target).isFile() || existsSync(path.join(target, "index.html")));
