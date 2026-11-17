@@ -37,7 +37,7 @@ Other commands:
 
 ```bash
 npm run typecheck && npm run lint
-npm run images      # rebuild public/img + src/data/images.json from assets/original/
+npm run images      # rebuild public/img + src/data/images.json (needs the original photos in assets/original/, not in the repo)
 npm run links       # check internal links in out/
 npm run screens     # Playwright screenshots (ROUTES="/,/matice/" WIDTHS="390,1280" REDUCED=1)
 npx playwright test tests/scroll.spec.ts tests/honey.spec.ts
@@ -58,10 +58,9 @@ src/components/       header, footer, mobile menu, motion, honey selector, secti
 src/data/content.ts   all copy: honeys, products, awards, FAQ, reviews
 src/lib/site.ts       name, address, phone, e-mail (single source)
 functions/api/        Cloudflare Pages Function for the contact form
-assets/original/      untouched source photos (old site, Facebook)
+public/img/           optimized photos (originals are kept out of the repo)
 scripts/              image pipeline, font subsetting, logo cleanup, link check, Pages deploy
 tests/                Playwright specs
-vault/                project notes: facts with sources, assets, brand, design decisions, SEO
 ```
 
 ## Deployment
@@ -89,4 +88,4 @@ The preview is for demonstration only: it is `noindex`, has no contact form (e-m
 
 - Texts, honeys, awards, FAQ, reviews: `src/data/content.ts`.
 - Address, phone, e-mail: `src/lib/site.ts` (the only place).
-- New photos: add to `assets/original/`, list them in `scripts/images.mjs`, run `npm run images`.
+- New photos: put the original in `assets/original/` (local only), list it in `scripts/images.mjs`, run `npm run images`.
