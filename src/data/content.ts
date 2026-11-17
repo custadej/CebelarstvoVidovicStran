@@ -1,4 +1,4 @@
-// All site copy and structured facts. Every fact here is backed by vault/facts.md.
+// All site copy and structured facts.
 // No health claims (EU 1924/2006): taste, colour, origin, season, storage and kitchen use only.
 
 export type ImageSlug = keyof typeof import("./images.json");
