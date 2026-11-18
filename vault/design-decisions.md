@@ -199,3 +199,51 @@ A second bug surfaced while fixing this: wrapping rails in a new element made th
 ### Lighthouse (mobile, simulated slow 4G, local)
 
 `/` 91 / 100 / 100 / 100, LCP 3.4 s, CLS 0. `/priznanja/` 89 / 100 / 100 / 100, LCP 3.7 s.
+
+## Session 4 (2026-11-17): hero, motion, header trial
+
+- **Hero rebuilt.** Photo without a frame: on phones full width on top, fading into the dark; on desktop it bleeds off the right edge (max 780 CSS px, 3:2 kept so no jar is cropped) and fades on the left, top and bottom. Removed: the "Državni prvak 2019" seal (Tadej: first thing seen was "2019", felt old; awards have their own section) and the line "Ste čebelar? Matice čebel" (nav pill is enough).
+- **Headline** "Domač med, *pridelan z ljubeznijo.*" (echoes his motto "Kar delaš, delaj z ljubeznijo."). Lead names all three apiary places. Eyebrow adds "Dravsko polje" so nobody drives to Zgornje Apače; on phones only the place is shown.
+- **Trust row:** number above label with a hairline on the left, instead of a big number beside a two-line label (looked misaligned).
+- **Honey drip** over the bottom edge of the hero (CSS keyframes, transform/opacity only, static with reduced motion).
+- **Honey thread lag fixed:** before, the line used `scrub: 0.5` (lagging behind Lenis) while the drop used raw progress, and the reveal animated `clip-path` on a page-tall SVG (repaint every frame). Now one ScrollTrigger drives both from the same progress, the reveal is two opposite translations (composite only), and the path's x is sampled once into a table.
+- **Bees** (Motion.tsx, original SVG): one flies over the hero photo at most 5 times per visit, 14–22 s apart, only while the hero is in view; tapping the honeycomb lets one out of the tapped cell. MotionPath `autoRotate`, body flipped when heading left so it never flies upside down. None with reduced motion.
+- **Header auto-hide is a trial** (`headerAutoHide` in `src/lib/site.ts`): hides after 140 px when scrolling down, returns on any scroll up, never while the menu is open or something in it has keyboard focus. This bends rule 7a (phone always in the header); one scroll up brings it back. Tadej decides after trying it.
+- **English and German (2026-11-17).** Tadej: a quiet language option in the footer, not in the nav; foreign visitors are rare but it helps them read. Slovenian stays at the root with its URLs unchanged; `/en/` and `/de/` mirror every page with the Slovenian slugs (simpler, and the domain stays the identity). Each language has its own root layout so `<html lang>` and hreflang alternates are correct; switching language is a full page load. The phone shows as +386 41 579 827 on EN/DE (same number, international format). Customer reviews are translated and marked "translated from Slovenian". German nav says "Medaillen" for Priznanja ("Preise" also means prices, and the site has none). Place names stay Slovenian (Haloze, Prekmurje, Dravsko polje).
+
+## Session 5 (2026-11-18): hero on wide screens, real honey, transitions, language by location
+
+- **Hero photo inside the content grid.** On a 2560 px screen the old photo stuck to the right edge of the window (absolute, right: 0). It is now the second column of the wrap grid, max 720 px, 3:2.
+- **Three hero looks to choose from** (Tadej was not sure about the fade): 1 honey poured over a rounded photo, 2 a slightly turned print on a honeycomb, 3 the fade (now contained). `data-hero` on the section, temporary switch `src/components/HeroSwitch.tsx` (preview only, marked `data-temp`). After the choice: delete the switch and the two unused CSS blocks.
+- **Honey drips look real:** one SVG drawn 1:1 (`preserveAspectRatio slice`, never stretched), goo filter (blur + alpha threshold) melts band, drips and drops into one shape, specular lighting gives the shine. Separate SVGs per drip left visible seams. Used at the hero edge, over the hero photo (look 1) and under the hive strip at the top of the footer.
+- **Fast-scroll bee:** scroll velocity over 3200 px/s brings a bee in from the right, it loops once and leaves; max 3 per page, 20 s apart. Bees are 46 px on desktop (were hard to see at 34 px).
+- **Page transition:** internal links let honey run down over the page (0.42 s), the route changes underneath, the honey runs off (0.62 s). Not on language switches (full load), not with reduced motion. Safety reveal after 3 s.
+- **Phones: shorter honey cards** in the selector: small jar beside the short card text; intro and facts only from `sm` up (they are on the honey page anyway).
+- **Language by location** (Tadej): Slovenia → Slovenian, DE/AT/CH/LI → German, elsewhere English; a Slovenian or German browser abroad keeps its language; a footer choice always wins. Cloudflare middleware does it on the live site, a browser-language script on the preview. Crawlers are never redirected so the root stays Slovenian for Google. The privacy notice now names the `lang` cookie and the country-based first view.
+
+### Session 5b (2026-11-18, Tadej's review)
+
+- The five-jar photo stays (Tadej: "ta slika more ostat"); texts unchanged.
+- Hero look chosen: rounded photo, honey over its top edge, a honeycomb of real cells behind it (`HeroComb.tsx`: honey-filled, wax-capped and empty cells in two clusters, fading out). The hero container is 1400 px wide from xl (to the header's edges), so the photo is ~660–720 px instead of ~540 px; it still never reaches the window edge on 2K. Two columns only from 1280 px; below that the photo is above the text.
+- "Poglejte med" is back beside the call button (the narrower text column had pushed it under).
+- Honey selector jars restored exactly as before (my phone layout had made them small); phones only show the short card text instead of the intro and facts.
+- Bees were too frequent: one budget per visit, at least 45 s between ambient bees, max 6. New: a minute of scrolling without any click brings one.
+- Preview opened English in Slovenia (English browser, GitHub Pages has no country): the fallback now uses the device time zone first (Europe/Ljubljana → Slovenian), no outside request.
+- Transition was too fast and looked glitchy: slower (0.7 s in, 0.9 s out, power3.inOut), waits for fonts and the first photo, and the new page's own entrance animations wait until the honey runs off.
+
+### Session 5c (2026-11-18): honey pages, performance
+
+- **Honey page jar:** the jar photos are crops of group shots (lipov 291 px wide, akacijev/kostanjev/cvetlični 398 px), unchanged since 14 Nov; at 380 px on the honey pages they were blurry and so tall that the left column ended in empty space. The honey page now uses the same hex jar visual as the home selector (max 260 px), which Tadej likes. A better fix is new single-jar photos (shot list in [[asset-log]]).
+- **Facts grid:** an odd last fact spans both columns (lipov had an empty cell).
+- **Performance** (scroll over the home page, 221 frames: janky frames over 33 ms went from 36 to 1):
+  - the 3D honeycomb renders only while something moves (scroll fill, hover, tilt, new selection) and sleeps otherwise; before it rendered every frame while visible;
+  - honey drips: the wide band is a static SVG filtered once; only small per-drip SVGs (80 px) animate, and only while on screen (`is-live` from Motion.tsx); before, the whole 2560 px filtered SVG re-ran its lighting filter every frame;
+  - header without `backdrop-blur` (it was 95 % opaque anyway).
+  - drips outside a narrow screen are clipped sideways (`overflow-x: clip`), they had widened the page.
+
+### Session 5d (2026-11-18): lighter mode for weak devices
+
+- Tadej: still a little stutter (in dev), could weak computers/phones get fewer effects? Dev mode is far slower than the build; judge in a production build.
+- `src/lib/quality.ts` decides "full" or "lite" once per visit: Save-Data, ≤2 CPU cores or ≤2 GB memory (where the browser tells), else a 30-frame measurement (median over 22 ms → lite). Motion.tsx also watches scrolling: over a fifth of 120 frames slower than 34 ms switches to lite on the spot.
+- Lite: no 3D honeycomb (the SVG comb is already the fallback), drips drawn but still, no Lenis smooth scroll, no photo tilt, magnetic buttons or cursor dot. Bees and the honey page transition stay (transform only, cheap).
+- Checked: CPU throttling ×10 in Chromium still gives 60 fps while scrolling (main thread is light now; the heavy parts were raster/GPU, which throttling does not simulate). Forcing 40 ms frames switches to lite as intended.

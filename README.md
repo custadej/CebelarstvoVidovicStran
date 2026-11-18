@@ -18,6 +18,7 @@ The goal of the site is simple: visitors call the beekeeper. It is not a webshop
 | 3D | three.js honeycomb, lazy-loaded below the fold with a static fallback |
 | Images | Pre-built AVIF/WebP derivatives in several widths with blur placeholders (`npm run images`) |
 | Contact form | Cloudflare Pages Function `functions/api/povprasevanje.ts` + Resend, honeypot field; hidden behind a flag until configured |
+| Languages | Slovenian at the root, English and German under `/en/` and `/de/` (own root layouts, so `<html lang>` and hreflang are right); quiet switch in the footer |
 | SEO | Canonical URLs, `sitemap.xml`, `robots.txt`, Open Graph image, JSON-LD (LocalBusiness), 301 redirects from the old Joomla URLs (`public/_redirects`) |
 | Tests | Playwright: scroll/navigation contract, honey selector, layout measurements, screenshots at 360–1536 px |
 
@@ -53,9 +54,12 @@ npx playwright test tests/scroll.spec.ts tests/honey.spec.ts
 ## Structure
 
 ```
-src/app/              routes (App Router)
-src/components/       header, footer, mobile menu, motion, honey selector, sections
-src/data/content.ts   all copy: honeys, products, awards, FAQ, reviews
+src/app/(sl)/         Slovenian routes (root layout); src/app/[lang]/ the same for en and de
+src/views/            page bodies with their copy in sl / en / de
+src/i18n/             languages, localePath(), shared UI strings (nav, buttons, footer)
+src/components/       shell, header, footer, language switch, mobile menu, motion, honey selector, sections
+src/data/content.ts   facts and copy in Slovenian: honeys, products, awards, FAQ, reviews
+src/data/content.*.ts English and German translations of the same (text only)
 src/lib/site.ts       name, address, phone, e-mail (single source)
 functions/api/        Cloudflare Pages Function for the contact form
 public/img/           optimized photos (originals are kept out of the repo)
@@ -86,6 +90,7 @@ The preview is for demonstration only: it is `noindex`, has no contact form (e-m
 
 ## Editing content
 
-- Texts, honeys, awards, FAQ, reviews: `src/data/content.ts`.
+- Texts, honeys, awards, FAQ, reviews: `src/data/content.ts`, plus the same change in `content.en.ts` and `content.de.ts`.
+- Page texts (headings, leads): the page's file in `src/views/` (all three languages side by side).
 - Address, phone, e-mail: `src/lib/site.ts` (the only place).
 - New photos: put the original in `assets/original/` (local only), list it in `scripts/images.mjs`, run `npm run images`.

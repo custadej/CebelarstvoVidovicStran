@@ -3,6 +3,13 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode, type TouchEvent } from "react";
 import { HoneycombCanvas } from "@/components/HoneycombCanvas";
 import { Rail } from "@/components/Rail";
+import type { Lang } from "@/i18n";
+
+const T = {
+  sl: { group: "Izberite med po barvi", hint: "Tapnite barvo ali izberite vrsto:", selected: "Izbran med ", prev: "Prejšnja vrsta medu", next: "Naslednja vrsta medu", kinds: "Vrste medu" },
+  en: { group: "Choose a honey by colour", hint: "Tap a colour or choose a kind:", selected: "Selected honey ", prev: "Previous honey", next: "Next honey", kinds: "Kinds of honey" },
+  de: { group: "Honig nach Farbe wählen", hint: "Tippen Sie auf eine Farbe oder wählen Sie eine Sorte:", selected: "Gewählter Honig ", prev: "Vorherige Sorte", next: "Nächste Sorte", kinds: "Honigsorten" },
+} satisfies Record<Lang, Record<string, string>>;
 
 type Item = { slug: string; label: string; name: string; color: string };
 
@@ -20,7 +27,8 @@ function hexPoints(cx: number, cy: number, r: number) {
 
 // One piece of state drives three views of the same choice: the honeycomb (tap a colour), the chips and the card.
 // Panels are rendered on the server and passed in, so all six honeys are in the HTML.
-export function HoneyExplorer({ items, panels, initial = 0 }: { items: Item[]; panels: ReactNode[]; initial?: number }) {
+export function HoneyExplorer({ lang, items, panels, initial = 0 }: { lang: Lang; items: Item[]; panels: ReactNode[]; initial?: number }) {
+  const t = T[lang];
   const [active, setActive] = useState(initial);
   const id = useId();
   const panelsRef = useRef<HTMLDivElement>(null);
@@ -99,7 +107,7 @@ export function HoneyExplorer({ items, panels, initial = 0 }: { items: Item[]; p
 
   return (
     <>
-      <div className="comb honeycomb relative aspect-[5/2] w-full md:aspect-[4/1]" data-has-active="">
+      <div className="comb honeycomb relative aspect-[5/2] w-full md:aspect-[4/1]" data-has-active="" data-bee-source="">
         <svg viewBox={`0 0 ${width.toFixed(0)} ${height.toFixed(0)}`} className="honeycomb-svg absolute inset-0 h-full w-full" aria-hidden="true">
           {cells.map((cell, i) => (
             <g key={i} className="comb-hex" data-on={cell.index === active ? "" : undefined} onClick={() => selectFromComb(cell.index)}>
@@ -111,7 +119,7 @@ export function HoneyExplorer({ items, panels, initial = 0 }: { items: Item[]; p
         </svg>
         <HoneycombCanvas colors={colors} active={active} onSelect={selectFromComb} />
         {/* Keyboard and screen-reader access to the same choice; the visible focus is the ring around the honeycomb. */}
-        <div role="group" aria-label="Izberite med po barvi">
+        <div role="group" aria-label={t.group}>
           {items.map((it, i) => (
             <button key={it.slug} type="button" className="comb-key sr-only" aria-pressed={i === active} onClick={() => selectFromComb(i)}>
               {it.name}
@@ -121,18 +129,18 @@ export function HoneyExplorer({ items, panels, initial = 0 }: { items: Item[]; p
       </div>
 
       <div className="mt-4 mb-4 flex items-center justify-between gap-4">
-        <p className="text-[1.0625rem]">Tapnite barvo ali izberite vrsto:</p>
+        <p className="text-[1.0625rem]">{t.hint}</p>
         <div className="flex flex-none items-center gap-2">
           <p className="num text-[1.05rem] text-akacija" aria-live="polite">
-            <span className="sr-only">Izbran med </span>
+            <span className="sr-only">{t.selected}</span>
             {active + 1} <span className="opacity-60">/ {items.length}</span>
           </p>
-          <button type="button" className="rail-arrow hidden md:grid" onClick={() => go(active - 1)} aria-label="Prejšnja vrsta medu">
+          <button type="button" className="rail-arrow hidden md:grid" onClick={() => go(active - 1)} aria-label={t.prev}>
             <svg width="18" height="12" viewBox="0 0 22 14" aria-hidden="true">
               <path d="M21 7H2m0 0 5.5-5.5M2 7l5.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </svg>
           </button>
-          <button type="button" className="rail-arrow hidden md:grid" onClick={() => go(active + 1)} aria-label="Naslednja vrsta medu">
+          <button type="button" className="rail-arrow hidden md:grid" onClick={() => go(active + 1)} aria-label={t.next}>
             <svg width="18" height="12" viewBox="0 0 22 14" aria-hidden="true">
               <path d="M1 7h19m0 0-5.5-5.5M20 7l-5.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </svg>
@@ -140,7 +148,7 @@ export function HoneyExplorer({ items, panels, initial = 0 }: { items: Item[]; p
         </div>
       </div>
 
-      <Rail role="tablist" label="Vrste medu" indicator="none" className="-mr-5 pr-5 md:mr-0 md:flex-wrap md:pr-0">
+      <Rail lang={lang} role="tablist" label={t.kinds} indicator="none" className="-mr-5 pr-5 md:mr-0 md:flex-wrap md:pr-0">
         {items.map((t, i) => (
           <button
             key={t.slug}

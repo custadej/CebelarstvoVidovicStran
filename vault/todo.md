@@ -48,9 +48,25 @@ Open from this session:
 
 Scroll-on-navigation bug fixed at the root, sticky bar and matice banner removed, hero seal, interactive honeycomb, rails with swipe affordances, awards page in one newest-first list on phones. Details and reasoning: [[design-decisions]] (Session 3). Tests: `tests/scroll.spec.ts` (8), `tests/honey.spec.ts` (6).
 
-Open:
-- Decide whether the hero line "Ste čebelar? Matice čebel" stays.
+Closed 2026-11-17: the hero line "Ste čebelar? Matice čebel" was removed (Tadej).
 
 Hero photo: Tadej chose photo 1 (five jars, fb-005). The temporary switch, the supplied queen photo and the fb-081 derivative were removed on his instruction.
 
 Closed by Tadej on 2026-11-14: Jože has read and approved the texts; no tax number needed; no new portrait (the apiary photo stays).
+
+## Session 4 (2026-11-17): hero, motion, languages — done
+
+Frameless hero with a new headline, all three apiary places (Dravsko polje, Haloze, Prekmurje) instead of "iz Haloz", no 2019 seal, honey drip, bees, smoother honey thread, header auto-hide trial, English and German versions with a footer switch. Details: [[design-decisions]] (Session 4).
+
+Open:
+- Header auto-hide: keep or not (`headerAutoHide` in `src/lib/site.ts`).
+- Does Jože speak English or German on the phone? The EN/DE pages invite people to call; if not, add a line such as "Jože speaks Slovenian; a short SMS in English works too" — only once confirmed.
+- English and German texts were translated by the developer; a native read-through before launch is worth it.
+
+## Session 5 (2026-11-18) — done, one choice open
+
+Hero fixed for wide screens, real honey drips (hero, photo, footer), fast-scroll bee, page transition, compact honey cards on phones, language by location. Details: [[design-decisions]] (Session 5).
+
+Open:
+- ~~Tadej picks hero look~~ closed 2026-11-18: five-jar photo stays, bigger, honey over its top edge, honeycomb behind; switch removed.
+- Check the language redirect on the real Cloudflare deploy (middleware cannot run on GitHub Pages).

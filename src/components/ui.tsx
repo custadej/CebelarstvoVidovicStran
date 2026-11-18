@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import type { Lang } from "@/i18n";
+import { ui } from "@/i18n/ui";
 import { site } from "@/lib/site";
 
 export function PhoneIcon({ size = 20 }: { size?: number }) {
@@ -23,11 +25,13 @@ export function Arrow() {
 }
 
 export function CallButton({
-  label = "Pokličite Jožeta",
+  lang,
+  label,
   variant = "med",
   magnetic = false,
   className = "",
 }: {
+  lang: Lang;
   label?: string;
   variant?: "med" | "smola" | "ghost";
   magnetic?: boolean;
@@ -37,7 +41,7 @@ export function CallButton({
     <a href={site.phone.href} className={`btn btn-${variant} ${className}`} data-magnetic={magnetic ? "" : undefined}>
       <PhoneIcon />
       <span>
-        {label} <span className="tel">· {site.phone.display}</span>
+        {label ?? ui[lang].callJoze} <span className="tel">· {ui[lang].phone}</span>
       </span>
     </a>
   );

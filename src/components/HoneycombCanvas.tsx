@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { detectQuality, LITE_EVENT } from "@/lib/quality";
 
 type Props = { colors: string[]; active: number; onSelect: (index: number) => void };
 
@@ -11,10 +12,12 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const activeRef = useRef(active);
   const selectRef = useRef(onSelect);
+  const wakeRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     activeRef.current = active;
     selectRef.current = onSelect;
+    wakeRef.current();
   }, [active, onSelect]);
 
   useEffect(() => {
@@ -39,6 +42,8 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
     io.observe(el);
 
     async function init() {
+      // weak device or measured stutter: the SVG comb underneath stays (src/lib/quality.ts)
+      if ((await detectQuality()) === "lite" || disposed) return;
       const THREE = await import("three");
       if (disposed || !el) return;
 
@@ -130,12 +135,17 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
         camera.updateProjectionMatrix();
       };
 
+      // Renders only while something moves (scroll fill, hover lift, tilt); once everything has settled the loop
+      // sleeps until the pointer, a scroll or a new selection wakes it.
+      let lastP = -1;
       const frame = () => {
         raf = 0;
         if (!visible) return;
         const rect = el.getBoundingClientRect();
         const vh = window.innerHeight;
         const p = Math.min(1, Math.max(0, (vh - rect.top) / (vh * 0.85)));
+        let moving = Math.abs(p - lastP) > 1e-4;
+        lastP = p;
         const sel = activeRef.current;
         for (const cell of cells) {
           const k = Math.min(1, Math.max(0, (p * 1.7 - cell.delay) / 0.6));
@@ -145,11 +155,15 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
           cell.honey.position.y = -DEPTH / 2 + h / 2;
           const on = cell.index === sel;
           const over = cell.index === hovered;
-          cell.lift += ((on ? 0.2 : over ? 0.09 : 0) - cell.lift) * 0.16;
-          cell.glow += ((on ? 0.42 : over ? 0.26 : 0.1) - cell.glow) * 0.16;
+          const lift = ((on ? 0.2 : over ? 0.09 : 0) - cell.lift) * 0.16;
+          const glowStep = ((on ? 0.42 : over ? 0.26 : 0.1) - cell.glow) * 0.16;
+          if (Math.abs(lift) > 1e-4 || Math.abs(glowStep) > 1e-4 || (k > 0 && k < 1)) moving = true;
+          cell.lift += lift;
+          cell.glow += glowStep;
           cell.root.position.y = cell.lift;
           cell.mat.emissiveIntensity = cell.glow;
         }
+        if (Math.abs(targetX - tiltX) > 1e-3 || Math.abs(targetY - tiltY) > 1e-3) moving = true;
         tiltX += (targetX - tiltX) * 0.06;
         tiltY += (targetY - tiltY) * 0.06;
         group.rotation.x = tiltY * 0.08;
@@ -160,11 +174,12 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
           renderer.domElement.style.opacity = "1";
           el.dataset.ready = "1";
         }
-        raf = requestAnimationFrame(frame);
+        if (moving) raf = requestAnimationFrame(frame);
       };
       const kick = () => {
         if (!raf && visible) raf = requestAnimationFrame(frame);
       };
+      wakeRef.current = kick;
 
       const pick = (e: PointerEvent | MouseEvent) => {
         const rect = el.getBoundingClientRect();
@@ -177,14 +192,17 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
         const rect = el.getBoundingClientRect();
         targetX = (e.clientX - rect.left) / rect.width - 0.5;
         targetY = (e.clientY - rect.top) / rect.height - 0.5;
+        kick();
       };
       const onMove = (e: PointerEvent) => {
         hovered = pick(e);
         el.style.cursor = hovered >= 0 ? "pointer" : "";
+        kick();
       };
       const onLeave = () => {
         hovered = -1;
         el.style.cursor = "";
+        kick();
       };
       const onClick = (e: MouseEvent) => {
         const index = pick(e);
@@ -199,6 +217,7 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
       const ro = new ResizeObserver(size);
       ro.observe(el);
       window.addEventListener("pointermove", onWindowPointer, { passive: true });
+      window.addEventListener("scroll", kick, { passive: true });
       el.addEventListener("pointermove", onMove);
       el.addEventListener("pointerleave", onLeave);
       el.addEventListener("click", onClick);
@@ -209,6 +228,8 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
         viewIo.disconnect();
         ro.disconnect();
         window.removeEventListener("pointermove", onWindowPointer);
+        window.removeEventListener("scroll", kick);
+        wakeRef.current = () => {};
         el.removeEventListener("pointermove", onMove);
         el.removeEventListener("pointerleave", onLeave);
         el.removeEventListener("click", onClick);
@@ -224,10 +245,18 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
       if (disposed) dispose();
     }
 
-    return () => {
+    // switched to lite while on the page: hand over to the SVG comb
+    const onLite = () => {
       disposed = true;
       io.disconnect();
       dispose?.();
+      dispose = undefined;
+    };
+    window.addEventListener(LITE_EVENT, onLite);
+
+    return () => {
+      window.removeEventListener(LITE_EVENT, onLite);
+      onLite();
     };
   }, [colors]);
 

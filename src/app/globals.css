@@ -327,6 +327,18 @@ body {
   z-index: 2;
   pointer-events: none;
 }
+.thread-clip,
+.thread-inner {
+  position: absolute;
+  inset: 0;
+}
+.thread-clip {
+  overflow: hidden;
+}
+.motion .thread-clip,
+.motion .thread-inner {
+  will-change: transform;
+}
 .thread svg {
   display: block;
   width: 100%;
@@ -762,5 +774,244 @@ html.lenis body {
     .panel:not([hidden]) {
       animation: panel-in 380ms var(--ease-story) both;
     }
+  }
+
+  /* hero: a little wider than the rest on large screens (up to the header's edges) so the photo can be big, but it
+     never runs off to the window edge. Photo 3:2, rounded, honey over its top edge, honeycomb behind. */
+  @media (min-width: 1280px) {
+    .hero-wrap {
+      max-width: 1400px;
+    }
+  }
+  .hero-media {
+    position: relative;
+    perspective: 1400px;
+    width: 100%;
+    max-width: 720px;
+  }
+  @media (min-width: 1280px) {
+    .hero-media {
+      justify-self: end;
+    }
+  }
+  .hero-photo {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border-radius: 1.75rem;
+    transform-style: preserve-3d;
+    box-shadow:
+      0 50px 90px -50px rgb(212 134 27 / 0.6),
+      0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+  .hero-comb {
+    position: absolute;
+    inset: -18% -12% -22% -16%;
+    z-index: 0;
+    pointer-events: none;
+    mask-image: radial-gradient(closest-side, #000 50%, transparent 100%);
+  }
+  .hero-comb svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* honey running over an edge (HoneyDrip.tsx) */
+  .honey-drip {
+    position: relative;
+    z-index: 4;
+    height: 0;
+    pointer-events: none;
+    /* drips outside a narrow screen are cut off sideways, never widen the page */
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+  .honey-band {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 30px;
+    overflow: visible;
+  }
+  .drip {
+    position: absolute;
+    top: 0;
+    width: 80px;
+    height: 220px;
+    margin-left: -40px;
+    overflow: visible;
+  }
+  .drip-stem {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+  }
+  .drip-bulb,
+  .drip-fall {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+  }
+  .drip-fall {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .motion .is-live .drip-stem {
+      animation: drip-stem 7.5s var(--ease-story) infinite;
+      animation-delay: calc(var(--delay) * -1);
+    }
+    .motion .is-live .drip-bulb {
+      animation: drip-bulb 7.5s var(--ease-story) infinite;
+      animation-delay: calc(var(--delay) * -1);
+    }
+    .motion .is-live .drip-fall {
+      animation: drip-fall 7.5s linear infinite;
+      animation-delay: calc(var(--delay) * -1);
+    }
+  }
+  @keyframes drip-stem {
+    0%,
+    100% {
+      transform: scaleY(0.62);
+    }
+    64% {
+      transform: scaleY(1);
+    }
+    70% {
+      transform: scaleY(0.66);
+    }
+  }
+  @keyframes drip-bulb {
+    0%,
+    100% {
+      transform: translateY(calc(var(--len) * -0.38px)) scale(0.85);
+    }
+    64% {
+      transform: translateY(0) scale(1.05, 1.18);
+    }
+    70% {
+      transform: translateY(calc(var(--len) * -0.34px)) scale(0.8);
+    }
+  }
+  @keyframes drip-fall {
+    0%,
+    63% {
+      opacity: 0;
+      transform: translateY(0);
+    }
+    64% {
+      opacity: 1;
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(96px);
+    }
+    84%,
+    100% {
+      opacity: 0;
+      transform: translateY(108px);
+    }
+  }
+  /* on a photo the band sits inside its rounded top edge */
+  .honey-drip-photo {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 2;
+  }
+
+  /* a bee that flies through (spawned by Motion.tsx; never shown with reduced motion) */
+  .bee {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 45;
+    width: 34px;
+    height: 34px;
+    margin: -17px 0 0 -17px;
+    pointer-events: none;
+    will-change: transform;
+  }
+  @media (min-width: 1024px) {
+    .bee {
+      width: 46px;
+      height: 46px;
+      margin: -23px 0 0 -23px;
+    }
+  }
+  .bee-local {
+    position: absolute;
+    z-index: 3;
+  }
+
+  /* page change: honey runs down over the page, the next page appears as it runs off (Motion.tsx) */
+  .curtain {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 90;
+    height: calc(100vh + 120px);
+    visibility: hidden;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .curtain-hold .rise,
+  .curtain-hold .unveil {
+    animation-play-state: paused;
+  }
+  .curtain-body {
+    position: absolute;
+    inset: 0 0 120px;
+    background:
+      radial-gradient(120% 60% at 30% 10%, rgb(255 236 180 / 0.35), transparent 60%),
+      linear-gradient(to bottom, #e9a53a, #d4861b 60%, #b46a10);
+  }
+  .curtain svg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 121px;
+  }
+  .curtain-bee {
+    position: absolute;
+    top: 50vh;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+  }
+  .bee svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .bee-wing {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: bee-wing 70ms linear infinite alternate;
+  }
+  .bee-wing + .bee-wing {
+    animation-delay: -35ms;
+  }
+  @keyframes bee-wing {
+    from {
+      transform: scaleY(1) rotate(-8deg);
+    }
+    to {
+      transform: scaleY(0.35) rotate(6deg);
+    }
+  }
+
+  /* header that steps aside while reading down and comes back on the first scroll up */
+  [data-autohide] {
+    transition: translate 320ms var(--ease-ui);
+  }
+  [data-autohide][data-hidden] {
+    translate: 0 calc(-100% - 1.5rem);
   }
 }

@@ -1,12 +1,29 @@
-import Link from "next/link";
 import { Photo } from "@/components/Photo";
-import { Arrow, CallButton, SectionHead } from "@/components/ui";
-import { kisResults, queenFacts, queenSteps } from "@/data/content";
+import { getContent } from "@/data";
+import type { Lang } from "@/i18n";
 
-export function QueenFacts() {
+const T = {
+  sl: {
+    kisEyebrow: "Test matic pri potomstvu · Kmetijski inštitut Slovenije",
+    kisTitle: "Naš matičar je bil dvakrat med najboljšimi v državi.",
+    kisNote: "Uvrstitev matičarja po povprečnem donosu medu in med najmanj rojivimi, objavljene preglednice testa za leti 2023 in 2025.",
+  },
+  en: {
+    kisEyebrow: "Progeny test of queens · Agricultural Institute of Slovenia",
+    kisTitle: "Our breeder queen was twice among the best in the country.",
+    kisNote: "Ranking of the breeder queen for average honey yield and lowest swarming tendency, from the published test tables for 2023 and 2025.",
+  },
+  de: {
+    kisEyebrow: "Nachkommenprüfung · Landwirtschaftsinstitut Sloweniens",
+    kisTitle: "Unsere Zuchtmutter war zweimal unter den besten des Landes.",
+    kisNote: "Platzierung der Zuchtmutter beim durchschnittlichen Honigertrag und bei der geringsten Schwarmneigung, laut den veröffentlichten Prüfungstabellen 2023 und 2025.",
+  },
+} satisfies Record<Lang, Record<string, string>>;
+
+export function QueenFacts({ lang }: { lang: Lang }) {
   return (
     <ul className="grid gap-px overflow-hidden rounded-3xl bg-white/15 md:grid-cols-3">
-      {queenFacts.map((f) => (
+      {getContent(lang).queenFacts.map((f) => (
         <li key={f.title} className="bg-hoja-2 p-7 md:p-8" data-reveal="">
           <h3 className="h-card text-akacija">{f.title}</h3>
           <p className="mt-3">{f.text}</p>
@@ -16,13 +33,14 @@ export function QueenFacts() {
   );
 }
 
-export function KisResults() {
+export function KisResults({ lang }: { lang: Lang }) {
+  const t = T[lang];
   return (
     <div className="rounded-3xl bg-vosek p-7 text-smola md:p-10" data-reveal="">
-      <p className="eyebrow">Test matic pri potomstvu · Kmetijski inštitut Slovenije</p>
-      <h3 className="h-card mt-3 max-w-[22ch]">Naš matičar je bil dvakrat med najboljšimi v državi.</h3>
+      <p className="eyebrow">{t.kisEyebrow}</p>
+      <h3 className="h-card mt-3 max-w-[22ch]">{t.kisTitle}</h3>
       <dl className="mt-7 grid gap-6 sm:grid-cols-2">
-        {kisResults.map((r) => (
+        {getContent(lang).kisResults.map((r) => (
           <div key={r.year} className="border-t-2 border-smola pt-4">
             <dt className="num text-[2.75rem] leading-none">{r.year}</dt>
             {r.items.map((i) => (
@@ -34,14 +52,13 @@ export function KisResults() {
           </div>
         ))}
       </dl>
-      <p className="muted mt-6 text-[0.95rem]">
-        Uvrstitev matičarja po povprečnem donosu medu in med najmanj rojivimi, objavljene preglednice testa za leti 2023 in 2025.
-      </p>
+      <p className="muted mt-6 text-[0.95rem]">{t.kisNote}</p>
     </div>
   );
 }
 
-export function QueenStory() {
+export function QueenStory({ lang }: { lang: Lang }) {
+  const { queenSteps } = getContent(lang);
   return (
     <div className="grid gap-10 lg:grid-cols-2 lg:gap-16" data-story="">
       <ol className="grid gap-12 lg:gap-0">
@@ -66,57 +83,5 @@ export function QueenStory() {
         </div>
       </div>
     </div>
-  );
-}
-
-export function Queens() {
-  return (
-    <section id="matice" className="section on-dark bg-hoja">
-      <div className="wrap">
-        <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
-          <SectionHead
-            n="01"
-            eyebrow="Matice čebel"
-            title={
-              <>
-                Oplojene in označene matice. <em>Tudi po pošti.</em>
-              </>
-            }
-            lead="Matice vzrejam od leta 2015. Čebelarji pridejo ponje tudi od daleč, lahko pa jih pošljem po pošti."
-          />
-          <div className="relative mx-auto w-full max-w-[460px]" data-reveal="">
-            <Photo
-              slug="matica-makro"
-              alt="Označena matica kranjske čebele na robu satja med delavkami"
-              sizes="(min-width: 1024px) 460px, 86vw"
-              className="hex-tall aspect-[5/6]"
-              position="58% 55%"
-              parallax
-            />
-          </div>
-        </div>
-
-        <div className="mt-14 lg:mt-20">
-          <QueenFacts />
-        </div>
-        <div className="mt-6">
-          <KisResults />
-        </div>
-
-        <div className="mt-20 lg:mt-28">
-          <p className="eyebrow">Od matičnika do pošte</p>
-          <div className="mt-8">
-            <QueenStory />
-          </div>
-        </div>
-
-        <div className="mt-16 flex flex-col gap-4 sm:flex-row sm:items-center lg:mt-10">
-          <CallButton label="Pokličite za matice" magnetic />
-          <Link href="/matice/" className="arrow-link">
-            Več o maticah <Arrow />
-          </Link>
-        </div>
-      </div>
-    </section>
   );
 }

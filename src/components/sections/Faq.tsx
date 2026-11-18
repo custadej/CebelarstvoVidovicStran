@@ -1,6 +1,8 @@
-import { faq } from "@/data/content";
+import { getContent } from "@/data";
+import type { Lang } from "@/i18n";
 
-export function FaqList({ queensOnly = false }: { queensOnly?: boolean }) {
+export function FaqList({ lang, queensOnly = false }: { lang: Lang; queensOnly?: boolean }) {
+  const { faq } = getContent(lang);
   const items = queensOnly ? faq.filter((f) => f.queens) : faq;
   return (
     <div className="border-t border-crta">

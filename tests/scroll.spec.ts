@@ -35,6 +35,9 @@ for (const vp of viewports) {
       await page.goto("/o-nas/");
       await settle(page);
       await scrollToBottom(page);
+      // the header may hide while reading down (headerAutoHide); a small scroll up brings it back, as a visitor would
+      await page.evaluate(() => window.scrollBy(0, -60));
+      await page.waitForTimeout(500);
       const before = await scrollY(page);
       expect(before).toBeGreaterThan(800);
 
