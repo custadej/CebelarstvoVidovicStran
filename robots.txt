@@ -1,0 +1,5 @@
+User-Agent: *
+Disallow: /
+
+Host: https://www.cebelarstvo-vidovic.si
+Sitemap: https://www.cebelarstvo-vidovic.si/sitemap.xml

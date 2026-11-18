@@ -1,0 +1,8 @@
+:HL["/CebelarstvoVidovicStran/_next/static/chunks/2oi8qsi2t0sso.css","style"]
+:HL["/CebelarstvoVidovicStran/_next/static/media/fraunces_italic-s.p.1udqptjpwn128.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/CebelarstvoVidovicStran/_next/static/media/fraunces_roman-s.p.1m9h20didcmz0.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/CebelarstvoVidovicStran/_next/static/media/vidovic_sans-s.p.0j2n6cqtqlunb.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+3:[["children",{"s":"__PAGE__","h":160}]]
+2:[["children",{"s":"cebelji-pridelki","h":64,"c":"$Q3"}]]
+1:[["children",{"s":"(sl)","h":48,"c":"$Q2"}]]
+0:{"b":"bisSYuVLzNq_ZkV5is0Qe","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

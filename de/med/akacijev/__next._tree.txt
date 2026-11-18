@@ -1,0 +1,9 @@
+:HL["/CebelarstvoVidovicStran/_next/static/chunks/2oi8qsi2t0sso.css","style"]
+:HL["/CebelarstvoVidovicStran/_next/static/media/fraunces_italic-s.p.1udqptjpwn128.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/CebelarstvoVidovicStran/_next/static/media/fraunces_roman-s.p.1m9h20didcmz0.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/CebelarstvoVidovicStran/_next/static/media/vidovic_sans-s.p.0j2n6cqtqlunb.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+4:[["children",{"s":"__PAGE__","h":160}]]
+3:[["children",{"s":{"n":"slug","t":"d","k":"akacijev","s":[]},"h":65632,"c":"$Q4"}]]
+2:[["children",{"s":"med","h":131136,"c":"$Q3"}]]
+1:[["children",{"s":{"n":"lang","t":"d","k":"de","s":["cebelji-pridelki","kontakt","matice","med","o-nas","pravno-obvestilo","priznanja","zasebnost"]},"h":196656,"c":"$Q2"}]]
+0:{"b":"bisSYuVLzNq_ZkV5is0Qe","t":{"t":{"s":"","h":131152,"c":"$Q1"}}}
