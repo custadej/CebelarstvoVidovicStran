@@ -40,12 +40,15 @@ export function Motion() {
       el.innerHTML = `<div class="curtain-body"></div>${CURTAIN_SVG}<div class="curtain-bee">${BEE_SVG}</div>`;
       document.body.appendChild(el);
       gsap.set(el, { yPercent: -100, autoAlpha: 0 });
+      const root = document.documentElement;
       const state: Curtain = {
         el,
         covering: false,
         reveal: () => {
           state.covering = false;
-          gsap.to(el, { yPercent: 100, duration: 0.62, ease: "power2.out", overwrite: true, onComplete: () => void gsap.set(el, { yPercent: -100, autoAlpha: 0 }) });
+          // the new page's own entrance (hero rise, photo unveil) starts as the honey runs off
+          root.classList.remove("curtain-hold");
+          gsap.to(el, { yPercent: 100, duration: 0.9, ease: "power3.inOut", overwrite: true, onComplete: () => void gsap.set(el, { yPercent: -100, autoAlpha: 0 }) });
         },
       };
       curtain.current = state;
@@ -64,10 +67,23 @@ export function Motion() {
         e.preventDefault();
         if (state.covering) return;
         state.covering = true;
-        gsap.fromTo(el, { yPercent: -100, autoAlpha: 1 }, { yPercent: 0, duration: 0.42, ease: "power2.in", overwrite: true, onComplete: () => router.push(to + url.search + url.hash) });
+        gsap.fromTo(
+          el,
+          { yPercent: -100, autoAlpha: 1 },
+          {
+            yPercent: 0,
+            duration: 0.7,
+            ease: "power3.inOut",
+            overwrite: true,
+            onComplete: () => {
+              root.classList.add("curtain-hold");
+              router.push(to + url.search + url.hash);
+            },
+          },
+        );
         window.setTimeout(() => {
           if (state.covering) state.reveal();
-        }, 3000);
+        }, 4000);
       };
       document.addEventListener("click", onClick, true);
     });
@@ -79,11 +95,29 @@ export function Motion() {
     };
   }, [router]);
 
+  // The new route is in: wait until it is painted with its fonts and first photo (at most 0.7 s), then let the honey run off.
   useEffect(() => {
     const c = curtain.current;
     if (!c?.covering) return;
-    const id = requestAnimationFrame(() => c.reveal());
-    return () => cancelAnimationFrame(id);
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      c.reveal();
+    };
+    const first = document.querySelector<HTMLImageElement>("main img");
+    const ready = Promise.all([
+      document.fonts.ready,
+      first && !first.complete ? first.decode().catch(() => undefined) : Promise.resolve(),
+      new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+      new Promise((r) => window.setTimeout(r, 180)),
+    ]);
+    void ready.then(go);
+    const cap = window.setTimeout(go, 700);
+    return () => {
+      done = true;
+      window.clearTimeout(cap);
+    };
   }, [pathname]);
 
   useEffect(() => {
@@ -314,20 +348,72 @@ export function Motion() {
         document.querySelectorAll(".bee").forEach((b) => b.remove());
       });
 
+      // Ambient bees share one budget for the whole visit (sessionStorage, so it survives page changes): at least
+      // 45 s between two of them and at most 6 per visit, so they stay a small surprise and never get in the way.
+      // The honeycomb bee is the visitor's own doing and is not counted.
+      const BEE_GAP = 45000;
+      const BEE_MAX = 6;
+      const store = {
+        get: (k: string) => {
+          try {
+            return Number(window.sessionStorage.getItem(k) ?? 0);
+          } catch {
+            return Number.POSITIVE_INFINITY;
+          }
+        },
+        set: (k: string, v: number) => {
+          try {
+            window.sessionStorage.setItem(k, String(v));
+          } catch {
+            // storage blocked: ambient bees simply stay off
+          }
+        },
+      };
+      const canFly = () =>
+        document.visibilityState === "visible" && flights.size === 0 && Date.now() - store.get("bee-last") >= BEE_GAP && store.get("bee-count") < BEE_MAX;
+      const spend = () => {
+        store.set("bee-last", Date.now());
+        store.set("bee-count", store.get("bee-count") + 1);
+      };
+
+      // In from the right, one loop, out again (fast scrolling, or a minute of reading).
+      const loopIn = () => {
+        spend();
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const cx = w * (w >= 1024 ? 0.8 : 0.62);
+        const cy = h * 0.46;
+        const r = Math.min(95, w * 0.15);
+        fly(
+          makeBee(),
+          [
+            { x: w + 50, y: h * 0.3 },
+            { x: cx + r * 1.5, y: cy - r * 0.7 },
+            { x: cx, y: cy - r },
+            { x: cx - r, y: cy },
+            { x: cx, y: cy + r },
+            { x: cx + r, y: cy },
+            { x: cx + r * 0.3, y: cy - r * 0.9 },
+            { x: w + 60, y: h * 0.2 },
+          ],
+          4.2,
+        );
+      };
+
+      // Over the hero photo: the first one shortly after arriving, then now and then while the hero is in view.
       const sky = document.querySelector<HTMLElement>("[data-bee-sky]");
       if (sky) {
         let inView = true;
-        let count = 0;
         let timer = 0;
         const io = new IntersectionObserver(([entry]) => (inView = entry.isIntersecting), { threshold: 0.3 });
         io.observe(sky);
         const launch = () => {
-          if (inView && document.visibilityState === "visible" && count < 5) {
-            count++;
+          if (inView && canFly()) {
+            spend();
             const w = sky.clientWidth;
             const h = sky.clientHeight;
-            const wide = w >= 1024;
-            // stay over the photo: the right half on wide screens, the top band on phones
+            const wide = w >= 1280;
+            // stay over the photo: the right half on wide screens, the top band on phones and tablets
             const x0 = wide ? w * 0.52 : w * 0.08;
             const x1 = wide ? w - 60 : w * 0.92;
             const y0 = wide ? h * 0.18 : h * 0.07;
@@ -342,7 +428,7 @@ export function Motion() {
             ];
             fly(makeBee(sky), path, rand(7, 9.5));
           }
-          timer = window.setTimeout(launch, rand(14000, 22000));
+          timer = window.setTimeout(launch, rand(50000, 70000));
         };
         timer = window.setTimeout(launch, 2400);
         undo.push(() => {
@@ -376,40 +462,38 @@ export function Motion() {
       document.addEventListener("click", onCombClick);
       undo.push(() => document.removeEventListener("click", onCombClick));
 
-      // Someone racing down the page gets a visitor: a bee flies in from the right, loops once and leaves.
-      // At most three times per page, 20 s apart, never while another bee is flying.
-      let fastCount = 0;
-      let fastLast = -Infinity;
+      // Racing down the page brings a visitor.
       const racer = ScrollTrigger.create({
         start: 0,
         end: "max",
         onUpdate: (self) => {
-          const now = performance.now();
-          if (Math.abs(self.getVelocity()) < 3200 || fastCount >= 3 || now - fastLast < 20000 || flights.size > 0) return;
-          fastLast = now;
-          fastCount++;
-          const w = window.innerWidth;
-          const h = window.innerHeight;
-          const cx = w * (w >= 1024 ? 0.8 : 0.62);
-          const cy = h * 0.46;
-          const r = Math.min(95, w * 0.15);
-          fly(
-            makeBee(),
-            [
-              { x: w + 50, y: h * 0.3 },
-              { x: cx + r * 1.5, y: cy - r * 0.7 },
-              { x: cx, y: cy - r },
-              { x: cx - r, y: cy },
-              { x: cx, y: cy + r },
-              { x: cx + r, y: cy },
-              { x: cx + r * 0.3, y: cy - r * 0.9 },
-              { x: w + 60, y: h * 0.2 },
-            ],
-            3.6,
-          );
+          if (Math.abs(self.getVelocity()) > 3200 && canFly()) loopIn();
         },
       });
       undo.push(() => racer.kill());
+
+      // A minute of reading (scrolling, no clicks) brings one too.
+      let quietSince = Date.now();
+      let scrolled = false;
+      const onRead = () => (scrolled = true);
+      const onAct = () => {
+        quietSince = Date.now();
+        scrolled = false;
+      };
+      const reader = window.setInterval(() => {
+        if (!scrolled || Date.now() - quietSince < 60000 || !canFly()) return;
+        loopIn();
+        onAct();
+      }, 5000);
+      window.addEventListener("scroll", onRead, { passive: true });
+      document.addEventListener("pointerdown", onAct);
+      document.addEventListener("keydown", onAct);
+      undo.push(() => {
+        window.clearInterval(reader);
+        window.removeEventListener("scroll", onRead);
+        document.removeEventListener("pointerdown", onAct);
+        document.removeEventListener("keydown", onAct);
+      });
 
       // Header that steps aside while reading down and comes back on the first scroll up (flag in src/lib/site.ts).
       const bar = document.querySelector<HTMLElement>("[data-autohide]");

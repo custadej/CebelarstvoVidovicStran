@@ -776,79 +776,47 @@ html.lenis body {
     }
   }
 
-  /* hero photo: in the right column of the content grid, 3:2, at most 720 px wide. Three looks via [data-hero]. */
+  /* hero: a little wider than the rest on large screens (up to the header's edges) so the photo can be big, but it
+     never runs off to the window edge. Photo 3:2, rounded, honey over its top edge, honeycomb behind. */
+  @media (min-width: 1280px) {
+    .hero-wrap {
+      max-width: 1400px;
+    }
+  }
   .hero-media {
     position: relative;
     perspective: 1400px;
-  }
-  .hero-photo {
-    position: relative;
     width: 100%;
-    aspect-ratio: 3 / 2;
-    transform-style: preserve-3d;
+    max-width: 720px;
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
     .hero-media {
-      width: 100%;
-      max-width: 720px;
       justify-self: end;
     }
   }
-  .hero-comb,
-  .hero-pour {
-    display: none;
-  }
-
-  /* 1: honey poured over the top of a rounded photo */
-  [data-hero="1"] .hero-photo {
+  .hero-photo {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
     border-radius: 1.75rem;
+    transform-style: preserve-3d;
     box-shadow:
       0 50px 90px -50px rgb(212 134 27 / 0.6),
       0 0 0 1px rgb(255 255 255 / 0.06);
   }
-  [data-hero="1"] .hero-pour {
-    display: block;
-  }
-
-  /* 2: a slightly turned print on a honeycomb */
-  [data-hero="2"] .hero-photo {
-    overflow: hidden;
-    border-radius: 1.25rem;
-    rotate: -2deg;
-    box-shadow: 0 34px 70px -34px rgb(0 0 0 / 0.8);
-  }
-  [data-hero="2"] .hero-comb {
-    display: block;
+  .hero-comb {
     position: absolute;
-    inset: -12% 14% -16% -9%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23d4861b' stroke-width='1.6'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23d4861b' stroke-width='1.6'/%3E%3C/svg%3E");
-    background-size: 44px 79px;
-    mask-image: radial-gradient(closest-side, #000 40%, transparent);
-    opacity: 0.75;
+    inset: -18% -12% -22% -16%;
+    z-index: 0;
+    pointer-events: none;
+    mask-image: radial-gradient(closest-side, #000 50%, transparent 100%);
   }
-
-  /* 3: the photo fades into the dark (full width on phones) */
-  [data-hero="3"] .hero-photo {
-    margin-inline: -1.75rem;
-    width: calc(100% + 3.5rem);
-    mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
-  }
-  @media (min-width: 768px) {
-    [data-hero="3"] .hero-photo {
-      margin-inline: -4.5rem;
-      width: calc(100% + 9rem);
-    }
-  }
-  @media (min-width: 1024px) {
-    [data-hero="3"] .hero-photo {
-      margin-inline: 0;
-      width: 100%;
-      mask-image:
-        linear-gradient(to right, transparent 0, #000 20%),
-        linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%);
-      mask-composite: intersect;
-    }
+  .hero-comb svg {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   /* honey running over an edge (HoneyDrip.tsx) */
@@ -977,6 +945,10 @@ html.lenis body {
     visibility: hidden;
     pointer-events: none;
     will-change: transform;
+  }
+  .curtain-hold .rise,
+  .curtain-hold .unveil {
+    animation-play-state: paused;
   }
   .curtain-body {
     position: absolute;

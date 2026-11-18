@@ -220,3 +220,13 @@ A second bug surfaced while fixing this: wrapping rails in a new element made th
 - **Page transition:** internal links let honey run down over the page (0.42 s), the route changes underneath, the honey runs off (0.62 s). Not on language switches (full load), not with reduced motion. Safety reveal after 3 s.
 - **Phones: shorter honey cards** in the selector: small jar beside the short card text; intro and facts only from `sm` up (they are on the honey page anyway).
 - **Language by location** (Tadej): Slovenia → Slovenian, DE/AT/CH/LI → German, elsewhere English; a Slovenian or German browser abroad keeps its language; a footer choice always wins. Cloudflare middleware does it on the live site, a browser-language script on the preview. Crawlers are never redirected so the root stays Slovenian for Google. The privacy notice now names the `lang` cookie and the country-based first view.
+
+### Session 5b (2026-11-18, Tadej's review)
+
+- The five-jar photo stays (Tadej: "ta slika more ostat"); texts unchanged.
+- Hero look chosen: rounded photo, honey over its top edge, a honeycomb of real cells behind it (`HeroComb.tsx`: honey-filled, wax-capped and empty cells in two clusters, fading out). The hero container is 1400 px wide from xl (to the header's edges), so the photo is ~660–720 px instead of ~540 px; it still never reaches the window edge on 2K. Two columns only from 1280 px; below that the photo is above the text.
+- "Poglejte med" is back beside the call button (the narrower text column had pushed it under).
+- Honey selector jars restored exactly as before (my phone layout had made them small); phones only show the short card text instead of the intro and facts.
+- Bees were too frequent: one budget per visit, at least 45 s between ambient bees, max 6. New: a minute of scrolling without any click brings one.
+- Preview opened English in Slovenia (English browser, GitHub Pages has no country): the fallback now uses the device time zone first (Europe/Ljubljana → Slovenian), no outside request.
+- Transition was too fast and looked glitchy: slower (0.7 s in, 0.9 s out, power3.inOut), waits for fonts and the first photo, and the new page's own entrance animations wait until the honey runs off.

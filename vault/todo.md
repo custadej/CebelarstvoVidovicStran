@@ -68,5 +68,5 @@ Open:
 Hero fixed for wide screens, real honey drips (hero, photo, footer), fast-scroll bee, page transition, compact honey cards on phones, language by location. Details: [[design-decisions]] (Session 5).
 
 Open:
-- Tadej picks hero look 1, 2 or 3 (switch at the bottom of the preview). Then remove `HeroSwitch.tsx`, its `data-temp` exception in `tests/honey.spec.ts` and the CSS of the other looks.
+- ~~Tadej picks hero look~~ closed 2026-11-18: five-jar photo stays, bigger, honey over its top edge, honeycomb behind; switch removed.
 - Check the language redirect on the real Cloudflare deploy (middleware cannot run on GitHub Pages).

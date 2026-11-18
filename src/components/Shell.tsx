@@ -57,13 +57,16 @@ export const viewport: Viewport = {
   themeColor: "#1f1711",
 };
 
-// Browser fallback for hosts without the Cloudflare middleware (e.g. the GitHub Pages preview): on a Slovenian page,
-// with no saved choice and no data-geo mark, a browser whose first language is not Slovenian goes to its version
-// (German → /de, anything else → /en). Bots stay. Runs before paint, once per tab.
+// Browser fallback for hosts without the Cloudflare middleware (e.g. the GitHub Pages preview), where the country is not
+// known. On a Slovenian page with no saved choice and no data-geo mark, the device's time zone stands in for the location
+// (no request to any outside service): Europe/Ljubljana or a Slovenian browser stays; a German-speaking time zone or a
+// German browser goes to /de; anything else to /en. Bots stay. Runs before paint, once per tab.
 const geoFallback = (base: string) => `(function(){try{var d=document.documentElement;if(d.dataset.geo||sessionStorage.getItem("lang-redirect"))return;
 var m=document.cookie.match(/(?:^|; )lang=(sl|en|de)/);var l=m?m[1]:null;
 if(!l){if(/bot|crawl|spider|slurp|preview|lighthouse|headless/i.test(navigator.userAgent))return;
-var b=((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();l=b.indexOf("sl")===0?"sl":b.indexOf("de")===0?"de":"en";}
+var tz="";try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"";}catch(e){}
+var b=((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();
+l=tz==="Europe/Ljubljana"||b.indexOf("sl")===0?"sl":/^Europe\\/(Berlin|Vienna|Zurich|Vaduz|Busingen)$/.test(tz)||b.indexOf("de")===0?"de":"en";}
 if(l==="sl")return;sessionStorage.setItem("lang-redirect","1");var p=location.pathname;var base=${JSON.stringify(base)};if(base&&p.indexOf(base)===0)p=p.slice(base.length)||"/";
 location.replace(base+"/"+l+p+location.search+location.hash);}catch(e){}})();`;
 

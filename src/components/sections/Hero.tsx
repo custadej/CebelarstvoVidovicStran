@@ -1,4 +1,4 @@
-import { HeroSwitch } from "@/components/HeroSwitch";
+import { HeroComb } from "@/components/HeroComb";
 import { HoneyDrip } from "@/components/HoneyDrip";
 import { Photo } from "@/components/Photo";
 import { Arrow, CallButton } from "@/components/ui";
@@ -7,8 +7,7 @@ import { site } from "@/lib/site";
 
 // Honey first. The photo sits in the right column of the content grid (it never runs off to the edge of a wide screen),
 // keeps its 3:2 shape so no jar is cropped and stays under ~720 CSS px, so the 1456 px source is sharp on retina.
-// Three looks are being compared (data-hero, temporary switch in HeroSwitch): 1 honey poured over the photo,
-// 2 photo on a honeycomb, 3 photo fading into the dark.
+// Look (Tadej, 2026-11-18): rounded photo with honey poured over its top edge, a honeycomb behind it.
 const T = {
   sl: {
     alt: "Pet kozarcev medu Čebelarstva Vidovič v vrsti: kostanjev, gozdni, lipov, cvetlični in akacijev",
@@ -62,17 +61,17 @@ export function Hero({ lang }: { lang: Lang }) {
   const s = (i: number) => ({ "--i": i }) as React.CSSProperties;
   return (
     <>
-      <section className="hero on-dark relative overflow-hidden bg-smola" data-bee-sky="" data-hero="1">
-        <div className="wrap relative z-[1] grid gap-8 pt-[calc(var(--header-h)+1.75rem)] pb-10 lg:min-h-[min(88svh,820px)] lg:grid-cols-[minmax(0,31rem)_minmax(0,1fr)] lg:items-center lg:gap-14 lg:pt-[calc(var(--header-h)+3.5rem)] lg:pb-12">
-          <div className="hero-media lg:col-start-2 lg:row-start-1">
-            <div className="hero-comb" aria-hidden="true" />
+      <section className="hero on-dark relative overflow-hidden bg-smola" data-bee-sky="">
+        <div className="wrap hero-wrap relative z-[1] grid gap-10 pt-[calc(var(--header-h)+2rem)] pb-10 md:pt-[calc(var(--header-h)+3rem)] xl:min-h-[min(88svh,820px)] xl:grid-cols-[minmax(0,34rem)_minmax(0,1fr)] xl:items-center xl:gap-12 xl:pt-[calc(var(--header-h)+3.5rem)] xl:pb-12">
+          <div className="hero-media xl:col-start-2 xl:row-start-1">
+            <HeroComb />
             <div className="hero-photo" data-tilt="">
-              <Photo slug="medovi-pet" alt={t.alt} sizes="(min-width: 1280px) 680px, (min-width: 1024px) 50vw, 92vw" priority className="unveil h-full w-full" />
-              <HoneyDrip id="hero-pour" preset="photo" className="hero-pour" />
+              <Photo slug="medovi-pet" alt={t.alt} sizes="(min-width: 1280px) 720px, (min-width: 768px) 720px, 92vw" priority className="unveil h-full w-full" />
+              <HoneyDrip id="hero-pour" preset="photo" />
             </div>
           </div>
 
-          <div className="lg:col-start-1 lg:row-start-1">
+          <div className="xl:col-start-1 xl:row-start-1">
             <p className="eyebrow rise" style={s(0)}>
               {t.place}
             </p>
@@ -87,7 +86,7 @@ export function Hero({ lang }: { lang: Lang }) {
             <p className="lead rise mt-6 max-w-[34ch]" style={s(3)}>
               {t.lead}
             </p>
-            <div className="rise mt-8 flex flex-col gap-3 whitespace-nowrap sm:flex-row sm:flex-wrap sm:items-center" style={s(4)}>
+            <div className="rise mt-8 flex flex-col gap-3 whitespace-nowrap sm:flex-row sm:items-center" style={s(4)}>
               <CallButton lang={lang} magnetic />
               <a href="#med" className="btn btn-ghost">
                 {t.see} <Arrow />
@@ -96,7 +95,7 @@ export function Hero({ lang }: { lang: Lang }) {
           </div>
         </div>
 
-        <div className="wrap relative z-[1] pb-12 lg:pb-14">
+        <div className="wrap hero-wrap relative z-[1] pb-12 lg:pb-14">
           <ul className="hero-trust rise grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-4" style={s(5)} aria-label={t.glance}>
             {t.trust.map((item) => (
               <li key={item.big} className="border-l border-white/15 pl-4">
@@ -116,7 +115,6 @@ export function Hero({ lang }: { lang: Lang }) {
         </div>
       </section>
       <HoneyDrip id="hero-edge" />
-      <HeroSwitch />
     </>
   );
 }

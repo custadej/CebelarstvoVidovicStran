@@ -31,7 +31,7 @@ test("no Slovenian page links into another language except the switch", async ({
 });
 
 test.describe("first visit from a foreign browser (preview fallback, no middleware)", () => {
-  test.use({ locale: "de-AT", userAgent: UA });
+  test.use({ locale: "de-AT", timezoneId: "Europe/Vienna", userAgent: UA });
 
   test("German browser opens German, a saved Slovenian choice stays", async ({ page, context }) => {
     await page.goto("/matice/");
@@ -47,10 +47,20 @@ test.describe("first visit from a foreign browser (preview fallback, no middlewa
 });
 
 test.describe("first visit from an English browser", () => {
-  test.use({ locale: "en-GB", userAgent: UA });
+  test.use({ locale: "en-GB", timezoneId: "Europe/London", userAgent: UA });
   test("opens English", async ({ page }) => {
     await page.goto("/");
     await page.waitForURL("**/en/");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  });
+});
+
+test.describe("English browser in Slovenia", () => {
+  test.use({ locale: "en-US", timezoneId: "Europe/Ljubljana", userAgent: UA });
+  test("stays Slovenian", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForTimeout(600);
+    expect(new URL(page.url()).pathname).toBe("/");
+    await expect(page.locator("html")).toHaveAttribute("lang", "sl");
   });
 });
