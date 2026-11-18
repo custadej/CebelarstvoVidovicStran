@@ -1,7 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 // A small bee facing right (+x), so autoRotate along a motion path points its head forward.
 const BEE_SVG = `<svg viewBox="-20 -20 40 40"><defs><clipPath id="bee-clip"><ellipse cx="-1" cy="0" rx="10.5" ry="7.2"/></clipPath></defs><g class="bee-body">
@@ -14,10 +14,77 @@ const BEE_SVG = `<svg viewBox="-20 -20 40 40"><defs><clipPath id="bee-clip"><ell
 <ellipse class="bee-wing" cx="2" cy="-8.5" rx="5.5" ry="9" fill="#fff" fill-opacity=".7" stroke="#fff" stroke-width=".8"/>
 </g></svg>`;
 
+// Bottom edge of the page-change curtain: honey running down in a few long drips.
+const CURTAIN_SVG = `<svg viewBox="0 0 1440 121" preserveAspectRatio="none"><defs><linearGradient id="curtain-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b46a10"/><stop offset="1" stop-color="#985609"/></linearGradient></defs><path fill="url(#curtain-fill)" d="M0 0H1440V40C1400 40 1395 52 1390 70C1386 86 1372 86 1370 70C1366 50 1350 42 1300 42H1120C1080 42 1076 58 1072 92C1068 114 1048 114 1046 92C1042 58 1030 44 990 44H760C730 44 724 60 721 78C718 96 700 96 698 78C694 58 680 46 640 46H420C380 46 376 64 372 100C369 120 348 120 346 100C342 62 330 48 290 48H140C110 48 104 60 101 74C98 88 82 88 80 74C76 56 60 44 30 44H0Z"/></svg>`;
+
+type Curtain = { el: HTMLElement; covering: boolean; reveal: () => void };
+
 // All scroll and pointer motion lives here. Markup is complete and visible without it:
 // with reduced motion (or no JS) nothing in this file runs and the page is static.
 export function Motion() {
   const pathname = usePathname();
+  const router = useRouter();
+  const curtain = useRef<Curtain | null>(null);
+
+  // Page change: a click on an internal link lets honey run down over the page (about 0.4 s), the route changes
+  // underneath, and the honey runs off to show the new page. Other languages are a full page load and keep the default.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let alive = true;
+    let onClick: ((e: MouseEvent) => void) | undefined;
+    void import("gsap").then(({ gsap }) => {
+      if (!alive) return;
+      const el = document.createElement("div");
+      el.className = "curtain";
+      el.setAttribute("aria-hidden", "true");
+      el.innerHTML = `<div class="curtain-body"></div>${CURTAIN_SVG}<div class="curtain-bee">${BEE_SVG}</div>`;
+      document.body.appendChild(el);
+      gsap.set(el, { yPercent: -100, autoAlpha: 0 });
+      const state: Curtain = {
+        el,
+        covering: false,
+        reveal: () => {
+          state.covering = false;
+          gsap.to(el, { yPercent: 100, duration: 0.62, ease: "power2.out", overwrite: true, onComplete: () => void gsap.set(el, { yPercent: -100, autoAlpha: 0 }) });
+        },
+      };
+      curtain.current = state;
+      const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+      const strip = (p: string) => (base && p.startsWith(base) ? p.slice(base.length) || "/" : p);
+      const tree = (p: string) => /^\/(en|de)(\/|$)/.exec(p)?.[1] ?? "sl";
+      onClick = (e: MouseEvent) => {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        const a = (e.target as Element | null)?.closest<HTMLAnchorElement>("a[href]");
+        if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
+        const url = new URL(a.href, window.location.href);
+        if (url.origin !== window.location.origin) return;
+        const to = strip(url.pathname);
+        const from = strip(window.location.pathname);
+        if (to === from || tree(to) !== tree(from) || /\.[a-z0-9]+$/i.test(to)) return;
+        e.preventDefault();
+        if (state.covering) return;
+        state.covering = true;
+        gsap.fromTo(el, { yPercent: -100, autoAlpha: 1 }, { yPercent: 0, duration: 0.42, ease: "power2.in", overwrite: true, onComplete: () => router.push(to + url.search + url.hash) });
+        window.setTimeout(() => {
+          if (state.covering) state.reveal();
+        }, 3000);
+      };
+      document.addEventListener("click", onClick, true);
+    });
+    return () => {
+      alive = false;
+      if (onClick) document.removeEventListener("click", onClick, true);
+      curtain.current?.el.remove();
+      curtain.current = null;
+    };
+  }, [router]);
+
+  useEffect(() => {
+    const c = curtain.current;
+    if (!c?.covering) return;
+    const id = requestAnimationFrame(() => c.reveal());
+    return () => cancelAnimationFrame(id);
+  }, [pathname]);
 
   useEffect(() => {
     let cancelled = false;
@@ -309,6 +376,41 @@ export function Motion() {
       document.addEventListener("click", onCombClick);
       undo.push(() => document.removeEventListener("click", onCombClick));
 
+      // Someone racing down the page gets a visitor: a bee flies in from the right, loops once and leaves.
+      // At most three times per page, 20 s apart, never while another bee is flying.
+      let fastCount = 0;
+      let fastLast = -Infinity;
+      const racer = ScrollTrigger.create({
+        start: 0,
+        end: "max",
+        onUpdate: (self) => {
+          const now = performance.now();
+          if (Math.abs(self.getVelocity()) < 3200 || fastCount >= 3 || now - fastLast < 20000 || flights.size > 0) return;
+          fastLast = now;
+          fastCount++;
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          const cx = w * (w >= 1024 ? 0.8 : 0.62);
+          const cy = h * 0.46;
+          const r = Math.min(95, w * 0.15);
+          fly(
+            makeBee(),
+            [
+              { x: w + 50, y: h * 0.3 },
+              { x: cx + r * 1.5, y: cy - r * 0.7 },
+              { x: cx, y: cy - r },
+              { x: cx - r, y: cy },
+              { x: cx, y: cy + r },
+              { x: cx + r, y: cy },
+              { x: cx + r * 0.3, y: cy - r * 0.9 },
+              { x: w + 60, y: h * 0.2 },
+            ],
+            3.6,
+          );
+        },
+      });
+      undo.push(() => racer.kill());
+
       // Header that steps aside while reading down and comes back on the first scroll up (flag in src/lib/site.ts).
       const bar = document.querySelector<HTMLElement>("[data-autohide]");
       if (bar) {
@@ -335,6 +437,29 @@ export function Motion() {
       }
 
       if (fine) {
+        // Hero photo leans a little towards the pointer
+        document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((el) => {
+          const host = el.closest("section") ?? el;
+          const rx = gsap.quickTo(el, "rotationX", { duration: 0.9, ease: "power3.out" });
+          const ry = gsap.quickTo(el, "rotationY", { duration: 0.9, ease: "power3.out" });
+          const move = (e: PointerEvent) => {
+            const r = el.getBoundingClientRect();
+            ry(((e.clientX - (r.left + r.width / 2)) / r.width) * 7);
+            rx(((e.clientY - (r.top + r.height / 2)) / r.height) * -5);
+          };
+          const leave = () => {
+            rx(0);
+            ry(0);
+          };
+          host.addEventListener("pointermove", move);
+          host.addEventListener("pointerleave", leave);
+          undo.push(() => {
+            host.removeEventListener("pointermove", move);
+            host.removeEventListener("pointerleave", leave);
+            gsap.set(el, { clearProps: "transform" });
+          });
+        });
+
         // Magnetic CTAs
         document.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((el) => {
           const xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "expo.out" });

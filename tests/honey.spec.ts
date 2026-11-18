@@ -77,7 +77,8 @@ for (const vp of viewports) {
       const fixedBottom = await page.evaluate(() =>
         [...document.querySelectorAll("body *")].filter((el) => {
           const s = getComputedStyle(el);
-          return s.position === "fixed" && el.getBoundingClientRect().top > innerHeight / 2 && el.getBoundingClientRect().height > 20;
+          // [data-temp]: the hero photo switch, only on the preview while a look is chosen
+          return s.position === "fixed" && !el.closest("[data-temp]") && el.getBoundingClientRect().top > innerHeight / 2 && el.getBoundingClientRect().height > 20;
         }).length,
       );
       expect(fixedBottom).toBe(0);

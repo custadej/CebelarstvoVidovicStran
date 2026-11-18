@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HoneyDrip } from "@/components/HoneyDrip";
 import { LangSwitch } from "@/components/LangSwitch";
 import { Logo } from "@/components/Logo";
 import { PhoneIcon, Strip } from "@/components/ui";
@@ -21,6 +22,7 @@ export function Footer({ lang, langPath }: { lang: Lang; langPath?: string }) {
   return (
     <footer className="on-dark bg-smola">
       <Strip />
+      <HoneyDrip id="foot" />
       <div className="wrap">
         <div data-foot-grid="" className="grid grid-cols-2 gap-x-8 gap-y-10 py-12 lg:grid-cols-4 lg:gap-x-10 lg:py-16">
           <div data-foot-col="" className="col-span-2 sm:col-span-1">

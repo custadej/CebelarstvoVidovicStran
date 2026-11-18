@@ -50,7 +50,11 @@ const body: Record<Lang, ReactNode> = {
         {who}. Pišete nam lahko na <Mail /> ali pokličete na <Phone lang="sl" />.
       </p>
       <h2>Katere podatke zbiramo</h2>
-      <p>Spletna stran ne uporablja piškotkov, analitike ali oglaševalskih orodij. Podatke dobimo samo, če nam jih pošljete sami:</p>
+      <p>
+        Spletna stran ne uporablja analitike ali oglaševalskih orodij. Edini piškotek je <code>lang</code>: nastavi se samo, ko v nogi strani izberete jezik, in si to
+        izbiro zapomni eno leto. Ob prvem obisku stran glede na državo, iz katere se povezujete, odpre slovensko, angleško ali nemško različico; ta podatek se ne
+        shrani. Druge podatke dobimo samo, če nam jih pošljete sami:
+      </p>
       <ul>
         <li>prek obrazca za povpraševanje: ime in priimek, telefonsko številko in vsebino sporočila,</li>
         <li>po e-pošti ali telefonu: podatke, ki jih navedete v sporočilu ali pogovoru.</li>
@@ -85,7 +89,11 @@ const body: Record<Lang, ReactNode> = {
         {who}, Slovenia. You can write to us at <Mail /> or call <Phone lang="en" />.
       </p>
       <h2>What data we collect</h2>
-      <p>The website does not use cookies, analytics or advertising tools. We only receive data if you send it to us yourself:</p>
+      <p>
+        The website does not use analytics or advertising tools. The only cookie is <code>lang</code>: it is set only when you choose a language in the footer and
+        remembers that choice for one year. On your first visit the site opens the Slovenian, English or German version depending on the country you connect from;
+        this is not stored. We only receive other data if you send it to us yourself:
+      </p>
       <ul>
         <li>through the enquiry form: your name, phone number and the content of your message,</li>
         <li>by e-mail or phone: the data you give in your message or conversation.</li>
@@ -120,7 +128,11 @@ const body: Record<Lang, ReactNode> = {
         {who}, Slowenien. Sie können uns unter <Mail /> schreiben oder <Phone lang="de" /> anrufen.
       </p>
       <h2>Welche Daten wir erheben</h2>
-      <p>Die Website verwendet keine Cookies, keine Analyse- und keine Werbewerkzeuge. Daten erhalten wir nur, wenn Sie sie uns selbst schicken:</p>
+      <p>
+        Die Website verwendet keine Analyse- und keine Werbewerkzeuge. Das einzige Cookie ist <code>lang</code>: Es wird nur gesetzt, wenn Sie in der Fußzeile eine
+        Sprache wählen, und merkt sich diese Wahl ein Jahr lang. Beim ersten Besuch öffnet die Website je nach dem Land, aus dem Sie sich verbinden, die
+        slowenische, englische oder deutsche Fassung; das wird nicht gespeichert. Andere Daten erhalten wir nur, wenn Sie sie uns selbst schicken:
+      </p>
       <ul>
         <li>über das Anfrageformular: Ihren Namen, Ihre Telefonnummer und den Inhalt Ihrer Nachricht,</li>
         <li>per E-Mail oder Telefon: die Daten, die Sie in Ihrer Nachricht oder im Gespräch angeben.</li>

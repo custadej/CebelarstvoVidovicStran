@@ -1,10 +1,14 @@
+import { HeroSwitch } from "@/components/HeroSwitch";
+import { HoneyDrip } from "@/components/HoneyDrip";
 import { Photo } from "@/components/Photo";
 import { Arrow, CallButton } from "@/components/ui";
 import type { Lang } from "@/i18n";
 import { site } from "@/lib/site";
 
-// Honey first. The photo has no frame: it fades into the dark on every side. It keeps its 3:2 shape (never cropped
-// into the jars) and is never wider than ~780 CSS px on large screens, so the 1456 px source stays sharp.
+// Honey first. The photo sits in the right column of the content grid (it never runs off to the edge of a wide screen),
+// keeps its 3:2 shape so no jar is cropped and stays under ~720 CSS px, so the 1456 px source is sharp on retina.
+// Three looks are being compared (data-hero, temporary switch in HeroSwitch): 1 honey poured over the photo,
+// 2 photo on a honeycomb, 3 photo fading into the dark.
 const T = {
   sl: {
     alt: "Pet kozarcev medu Čebelarstva Vidovič v vrsti: kostanjev, gozdni, lipov, cvetlični in akacijev",
@@ -58,96 +62,61 @@ export function Hero({ lang }: { lang: Lang }) {
   const s = (i: number) => ({ "--i": i }) as React.CSSProperties;
   return (
     <>
-    <section className="hero on-dark relative overflow-hidden bg-smola" data-bee-sky="">
-      <div className="relative lg:flex lg:min-h-[min(88svh,820px)] lg:items-center lg:pt-[calc(var(--header-h)+3rem)]">
-        <div className="hero-photo">
-          <Photo
-            slug="medovi-pet"
-            alt={t.alt}
-            sizes="(min-width: 1024px) min(54vw, 780px), 100vw"
-            priority
-            className="unveil h-full w-full"
-          />
-        </div>
+      <section className="hero on-dark relative overflow-hidden bg-smola" data-bee-sky="" data-hero="1">
+        <div className="wrap relative z-[1] grid gap-8 pt-[calc(var(--header-h)+1.75rem)] pb-10 lg:min-h-[min(88svh,820px)] lg:grid-cols-[minmax(0,31rem)_minmax(0,1fr)] lg:items-center lg:gap-14 lg:pt-[calc(var(--header-h)+3.5rem)] lg:pb-12">
+          <div className="hero-media lg:col-start-2 lg:row-start-1">
+            <div className="hero-comb" aria-hidden="true" />
+            <div className="hero-photo" data-tilt="">
+              <Photo slug="medovi-pet" alt={t.alt} sizes="(min-width: 1280px) 680px, (min-width: 1024px) 50vw, 92vw" priority className="unveil h-full w-full" />
+              <HoneyDrip id="hero-pour" preset="photo" className="hero-pour" />
+            </div>
+          </div>
 
-        <div className="wrap relative z-[1] -mt-8 pb-10 sm:-mt-14 lg:mt-0 lg:pb-12">
-        <div className="lg:max-w-[33rem]">
-          <p className="eyebrow rise" style={s(0)}>
-            {t.place}
-          </p>
-          <h1 className="display mt-4 text-[clamp(2.9rem,11vw,5.6rem)]">
-            <span className="rise block" style={s(1)}>
-              {t.h1}
-            </span>
-            <span className="rise block" style={s(2)}>
-              <em>{t.h1em}</em>
-            </span>
-          </h1>
-          <p className="lead rise mt-6 max-w-[34ch]" style={s(3)}>
-            {t.lead}
-          </p>
-          <div className="rise mt-8 flex flex-col gap-3 whitespace-nowrap sm:flex-row sm:flex-wrap sm:items-center" style={s(4)}>
-            <CallButton lang={lang} magnetic />
-            <a href="#med" className="btn btn-ghost">
-              {t.see} <Arrow />
-            </a>
+          <div className="lg:col-start-1 lg:row-start-1">
+            <p className="eyebrow rise" style={s(0)}>
+              {t.place}
+            </p>
+            <h1 className="display mt-4 text-[clamp(2.9rem,11vw,5.4rem)]">
+              <span className="rise block" style={s(1)}>
+                {t.h1}
+              </span>
+              <span className="rise block" style={s(2)}>
+                <em>{t.h1em}</em>
+              </span>
+            </h1>
+            <p className="lead rise mt-6 max-w-[34ch]" style={s(3)}>
+              {t.lead}
+            </p>
+            <div className="rise mt-8 flex flex-col gap-3 whitespace-nowrap sm:flex-row sm:flex-wrap sm:items-center" style={s(4)}>
+              <CallButton lang={lang} magnetic />
+              <a href="#med" className="btn btn-ghost">
+                {t.see} <Arrow />
+              </a>
+            </div>
           </div>
         </div>
+
+        <div className="wrap relative z-[1] pb-12 lg:pb-14">
+          <ul className="hero-trust rise grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-4" style={s(5)} aria-label={t.glance}>
+            {t.trust.map((item) => (
+              <li key={item.big} className="border-l border-white/15 pl-4">
+                <span className="num block text-[clamp(1.75rem,5vw,2.125rem)] leading-none text-akacija">{item.big}</span>
+                <span className="mt-2 block max-w-[24ch] text-[0.9375rem] leading-snug opacity-85">
+                  {item.href ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer" className="link">
+                      {item.label}
+                    </a>
+                  ) : (
+                    item.label
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-
-      <div className="wrap relative z-[1] pb-12 lg:pb-14">
-        <ul className="hero-trust rise grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-4" style={s(5)} aria-label={t.glance}>
-          {t.trust.map((item) => (
-            <li key={item.big} className="border-l border-white/15 pl-4">
-              <span className="num block text-[clamp(1.75rem,5vw,2.125rem)] leading-none text-akacija">{item.big}</span>
-              <span className="mt-2 block max-w-[24ch] text-[0.9375rem] leading-snug opacity-85">
-                {item.href ? (
-                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="link">
-                    {item.label}
-                  </a>
-                ) : (
-                  item.label
-                )}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-    <HoneyDrip />
+      </section>
+      <HoneyDrip id="hero-edge" />
+      <HeroSwitch />
     </>
-  );
-}
-
-// Honey running over the bottom edge of the hero. Static shape; the drips grow and one drop falls (CSS, motion-safe).
-function HoneyDrip() {
-  return (
-    <div className="honey-drip" aria-hidden="true">
-      <svg viewBox="0 0 1440 28" preserveAspectRatio="none" className="honey-drip-band">
-        <defs>
-          <linearGradient id="drip-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#e9a53a" />
-            <stop offset="1" stopColor="#c47812" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M0 0H1440V14C1380 18 1330 12 1270 16S1150 26 1090 18 980 10 900 17 760 24 690 15 560 8 470 18 330 26 250 16 110 9 0 16Z"
-          fill="url(#drip-fill)"
-        />
-      </svg>
-      {[
-        { left: "17%", h: 34, d: 0 },
-        { left: "46%", h: 22, d: 1.6 },
-        { left: "71%", h: 46, d: 0.8 },
-        { left: "89%", h: 18, d: 2.4 },
-      ].map((drip) => (
-        <span key={drip.left} className="drip" style={{ left: drip.left, "--h": `${drip.h}px`, "--d": `${drip.d}s` } as React.CSSProperties}>
-          <span className="drip-stem" />
-          <span className="drip-bulb" />
-          <span className="drip-fall" />
-        </span>
-      ))}
-    </div>
   );
 }

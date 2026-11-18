@@ -776,130 +776,172 @@ html.lenis body {
     }
   }
 
-  /* hero photo: no frame, it fades into the dark (mobile: full width on top; desktop: bleeds off the right edge) */
+  /* hero photo: in the right column of the content grid, 3:2, at most 720 px wide. Three looks via [data-hero]. */
+  .hero-media {
+    position: relative;
+    perspective: 1400px;
+  }
   .hero-photo {
     position: relative;
     width: 100%;
     aspect-ratio: 3 / 2;
-    margin-top: calc(var(--header-h) + 1.25rem);
-    mask-image: linear-gradient(to bottom, #000 58%, transparent 98%);
+    transform-style: preserve-3d;
   }
   @media (min-width: 1024px) {
-    .hero-photo {
-      position: absolute;
-      top: calc(50% + var(--header-h) / 2);
-      right: 0;
-      width: min(54vw, 780px);
-      margin-top: 0;
-      translate: 0 -50%;
+    .hero-media {
+      width: 100%;
+      max-width: 720px;
+      justify-self: end;
+    }
+  }
+  .hero-comb,
+  .hero-pour {
+    display: none;
+  }
+
+  /* 1: honey poured over the top of a rounded photo */
+  [data-hero="1"] .hero-photo {
+    overflow: hidden;
+    border-radius: 1.75rem;
+    box-shadow:
+      0 50px 90px -50px rgb(212 134 27 / 0.6),
+      0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+  [data-hero="1"] .hero-pour {
+    display: block;
+  }
+
+  /* 2: a slightly turned print on a honeycomb */
+  [data-hero="2"] .hero-photo {
+    overflow: hidden;
+    border-radius: 1.25rem;
+    rotate: -2deg;
+    box-shadow: 0 34px 70px -34px rgb(0 0 0 / 0.8);
+  }
+  [data-hero="2"] .hero-comb {
+    display: block;
+    position: absolute;
+    inset: -12% 14% -16% -9%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23d4861b' stroke-width='1.6'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23d4861b' stroke-width='1.6'/%3E%3C/svg%3E");
+    background-size: 44px 79px;
+    mask-image: radial-gradient(closest-side, #000 40%, transparent);
+    opacity: 0.75;
+  }
+
+  /* 3: the photo fades into the dark (full width on phones) */
+  [data-hero="3"] .hero-photo {
+    margin-inline: -1.75rem;
+    width: calc(100% + 3.5rem);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
+  }
+  @media (min-width: 768px) {
+    [data-hero="3"] .hero-photo {
+      margin-inline: -4.5rem;
+      width: calc(100% + 9rem);
+    }
+  }
+  @media (min-width: 1024px) {
+    [data-hero="3"] .hero-photo {
+      margin-inline: 0;
+      width: 100%;
       mask-image:
-        linear-gradient(to right, transparent 0, #000 16%),
-        linear-gradient(to bottom, transparent 0, #000 12%, #000 78%, transparent 100%);
+        linear-gradient(to right, transparent 0, #000 20%),
+        linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%);
       mask-composite: intersect;
     }
   }
 
-  /* honey running over the bottom edge of the hero */
+  /* honey running over an edge (HoneyDrip.tsx) */
   .honey-drip {
     position: relative;
     z-index: 4;
     height: 0;
     pointer-events: none;
   }
-  .honey-drip-band {
-    position: absolute;
-    top: -1px;
-    left: 0;
-    width: 100%;
-    height: 16px;
-  }
-  .drip {
-    position: absolute;
-    top: 6px;
-    width: 12px;
-    margin-left: -6px;
-  }
-  .drip-stem {
+  .honey-run {
     position: absolute;
     top: 0;
-    left: 2px;
-    width: 8px;
-    height: var(--h);
-    border-radius: 0 0 4px 4px;
-    background: linear-gradient(to right, #c47812, #e9a53a 45%, #c47812);
-    transform-origin: top;
+    left: 0;
+    width: 100%;
+    height: 220px;
+    overflow: visible;
+  }
+  .drip-stem {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
   }
   .drip-bulb,
   .drip-fall {
-    position: absolute;
-    left: 0;
-    top: calc(var(--h) - 8px);
-    width: 12px;
-    height: 14px;
-    border-radius: 50% 50% 50% 50% / 42% 42% 58% 58%;
-    background: radial-gradient(circle at 35% 30%, #f6d27a, var(--color-med) 55%, #b46a10);
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
   }
   .drip-fall {
     opacity: 0;
   }
   @media (prefers-reduced-motion: no-preference) {
     .motion .drip-stem {
-      animation: drip-stem 7s var(--ease-story) infinite;
-      animation-delay: calc(var(--d) * -1);
+      animation: drip-stem 7.5s var(--ease-story) infinite;
+      animation-delay: calc(var(--delay) * -1);
     }
     .motion .drip-bulb {
-      animation: drip-bulb 7s var(--ease-story) infinite;
-      animation-delay: calc(var(--d) * -1);
+      animation: drip-bulb 7.5s var(--ease-story) infinite;
+      animation-delay: calc(var(--delay) * -1);
     }
     .motion .drip-fall {
-      animation: drip-fall 7s linear infinite;
-      animation-delay: calc(var(--d) * -1);
+      animation: drip-fall 7.5s linear infinite;
+      animation-delay: calc(var(--delay) * -1);
     }
   }
   @keyframes drip-stem {
     0%,
     100% {
-      transform: scaleY(0.5);
+      transform: scaleY(0.62);
     }
-    62% {
+    64% {
       transform: scaleY(1);
     }
-    68% {
-      transform: scaleY(0.56);
+    70% {
+      transform: scaleY(0.66);
     }
   }
   @keyframes drip-bulb {
     0%,
     100% {
-      transform: translateY(calc(var(--h) * -0.5)) scale(0.8);
+      transform: translateY(calc(var(--len) * -0.38px)) scale(0.85);
     }
-    62% {
-      transform: translateY(0) scale(1.08, 1.15);
+    64% {
+      transform: translateY(0) scale(1.05, 1.18);
     }
-    68% {
-      transform: translateY(calc(var(--h) * -0.44)) scale(0.78);
+    70% {
+      transform: translateY(calc(var(--len) * -0.34px)) scale(0.8);
     }
   }
   @keyframes drip-fall {
     0%,
-    61% {
+    63% {
       opacity: 0;
       transform: translateY(0);
     }
-    62% {
+    64% {
       opacity: 1;
-      transform: translateY(0) scale(1.05, 1.15);
+      transform: translateY(0);
       animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
     }
-    78% {
+    80% {
       opacity: 1;
-      transform: translateY(84px) scale(0.85, 1.2);
+      transform: translateY(96px);
     }
-    82%,
+    84%,
     100% {
       opacity: 0;
-      transform: translateY(96px) scale(1.3, 0.5);
+      transform: translateY(108px);
     }
+  }
+  /* on a photo the band sits inside its rounded top edge */
+  .honey-drip-photo {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 2;
   }
 
   /* a bee that flies through (spawned by Motion.tsx; never shown with reduced motion) */
@@ -914,9 +956,49 @@ html.lenis body {
     pointer-events: none;
     will-change: transform;
   }
+  @media (min-width: 1024px) {
+    .bee {
+      width: 46px;
+      height: 46px;
+      margin: -23px 0 0 -23px;
+    }
+  }
   .bee-local {
     position: absolute;
     z-index: 3;
+  }
+
+  /* page change: honey runs down over the page, the next page appears as it runs off (Motion.tsx) */
+  .curtain {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 90;
+    height: calc(100vh + 120px);
+    visibility: hidden;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .curtain-body {
+    position: absolute;
+    inset: 0 0 120px;
+    background:
+      radial-gradient(120% 60% at 30% 10%, rgb(255 236 180 / 0.35), transparent 60%),
+      linear-gradient(to bottom, #e9a53a, #d4861b 60%, #b46a10);
+  }
+  .curtain svg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 121px;
+  }
+  .curtain-bee {
+    position: absolute;
+    top: 50vh;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
   }
   .bee svg {
     display: block;

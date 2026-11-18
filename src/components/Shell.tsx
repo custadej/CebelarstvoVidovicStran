@@ -57,12 +57,23 @@ export const viewport: Viewport = {
   themeColor: "#1f1711",
 };
 
+// Browser fallback for hosts without the Cloudflare middleware (e.g. the GitHub Pages preview): on a Slovenian page,
+// with no saved choice and no data-geo mark, a browser whose first language is not Slovenian goes to its version
+// (German → /de, anything else → /en). Bots stay. Runs before paint, once per tab.
+const geoFallback = (base: string) => `(function(){try{var d=document.documentElement;if(d.dataset.geo||sessionStorage.getItem("lang-redirect"))return;
+var m=document.cookie.match(/(?:^|; )lang=(sl|en|de)/);var l=m?m[1]:null;
+if(!l){if(/bot|crawl|spider|slurp|preview|lighthouse|headless/i.test(navigator.userAgent))return;
+var b=((navigator.languages&&navigator.languages[0])||navigator.language||"").toLowerCase();l=b.indexOf("sl")===0?"sl":b.indexOf("de")===0?"de":"en";}
+if(l==="sl")return;sessionStorage.setItem("lang-redirect","1");var p=location.pathname;var base=${JSON.stringify(base)};if(base&&p.indexOf(base)===0)p=p.slice(base.length)||"/";
+location.replace(base+"/"+l+p+location.search+location.hash);}catch(e){}})();`;
+
 // The document for one language. Each language tree (Slovenian at the root, /en and /de) has its own root layout
 // that renders this, so <html lang> is right on every page.
 export function Shell({ lang, langPath, children }: { lang: Lang; langPath?: string; children: ReactNode }) {
   return (
     <html lang={lang} className={`${fraunces.variable} ${frauncesItalic.variable} ${source.variable} antialiased`}>
       <body className="min-h-dvh">
+        {lang === "sl" ? <script dangerouslySetInnerHTML={{ __html: geoFallback(process.env.NEXT_PUBLIC_BASE_PATH ?? "") }} /> : null}
         <a
           href="#vsebina"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-smola focus:px-5 focus:py-3 focus:text-papir"

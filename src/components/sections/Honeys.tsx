@@ -73,16 +73,18 @@ function JarVisual({ lang, h, className = "" }: { lang: Lang; h: Honey; classNam
 
 function HoneyPanel({ lang, h }: { lang: Lang; h: Honey }) {
   return (
-    <div className="grid gap-6 p-5 sm:grid-cols-[minmax(0,220px)_1fr] sm:items-center sm:gap-8 md:p-8">
-      <JarVisual lang={lang} h={h} className="mx-auto aspect-[4/5] w-[52%] max-w-[220px] sm:w-full" />
+    // Phones: small jar beside a short card text; the facts and the longer intro are on the honey's own page.
+    <div className="grid grid-cols-[84px_minmax(0,1fr)] items-center gap-4 p-4 sm:grid-cols-[minmax(0,220px)_1fr] sm:gap-8 md:p-8">
+      <JarVisual lang={lang} h={h} className="aspect-[4/5] w-full max-w-[220px] self-start sm:self-center" />
       <div>
-        <p className="inline-flex items-center gap-2 rounded-full bg-papir px-3 py-1 text-[0.8125rem] font-semibold tracking-wide">
+        <p className="inline-flex items-center gap-2 rounded-full bg-papir px-3 py-1 text-[0.75rem] font-semibold tracking-wide sm:text-[0.8125rem]">
           <span aria-hidden="true" className="hex h-3 w-3" style={{ background: h.color }} />
           {h.tag}
         </p>
-        <h3 className="display mt-3 text-[clamp(1.9rem,6vw,2.75rem)]">{h.name}</h3>
-        <p className="mt-3 max-w-[48ch]">{h.intro}</p>
-        <dl className="mt-5 grid gap-x-6 gap-y-3 lg:grid-cols-3">
+        <h3 className="display mt-2 text-[clamp(1.6rem,6vw,2.75rem)] sm:mt-3">{h.name}</h3>
+        <p className="mt-2 text-[1rem] leading-snug sm:hidden">{h.card}</p>
+        <p className="mt-3 hidden max-w-[48ch] sm:block">{h.intro}</p>
+        <dl className="mt-5 hidden gap-x-6 gap-y-3 sm:grid lg:grid-cols-3">
           {h.facts.slice(0, 3).map((f) => (
             <div key={f.label} className="border-t border-crta pt-2">
               <dt className="eyebrow !text-[0.75rem]">{f.label}</dt>
@@ -90,7 +92,7 @@ function HoneyPanel({ lang, h }: { lang: Lang; h: Honey }) {
             </div>
           ))}
         </dl>
-        <Link href={localePath(lang, `/med/${h.slug}/`)} className="arrow-link mt-4 text-kostanj">
+        <Link href={localePath(lang, `/med/${h.slug}/`)} className="arrow-link mt-1 text-kostanj sm:mt-4">
           {T[lang].moreHoney} <Arrow />
         </Link>
       </div>

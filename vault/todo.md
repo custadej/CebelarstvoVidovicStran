@@ -62,3 +62,11 @@ Open:
 - Header auto-hide: keep or not (`headerAutoHide` in `src/lib/site.ts`).
 - Does Jože speak English or German on the phone? The EN/DE pages invite people to call; if not, add a line such as "Jože speaks Slovenian; a short SMS in English works too" — only once confirmed.
 - English and German texts were translated by the developer; a native read-through before launch is worth it.
+
+## Session 5 (2026-11-18) — done, one choice open
+
+Hero fixed for wide screens, real honey drips (hero, photo, footer), fast-scroll bee, page transition, compact honey cards on phones, language by location. Details: [[design-decisions]] (Session 5).
+
+Open:
+- Tadej picks hero look 1, 2 or 3 (switch at the bottom of the preview). Then remove `HeroSwitch.tsx`, its `data-temp` exception in `tests/honey.spec.ts` and the CSS of the other looks.
+- Check the language redirect on the real Cloudflare deploy (middleware cannot run on GitHub Pages).
