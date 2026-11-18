@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { detectQuality, LITE_EVENT, setQuality } from "@/lib/quality";
 
 // A small bee facing right (+x), so autoRotate along a motion path points its head forward.
 const BEE_SVG = `<svg viewBox="-20 -20 40 40"><defs><clipPath id="bee-clip"><ellipse cx="-1" cy="0" rx="10.5" ry="7.2"/></clipPath></defs><g class="bee-body">
@@ -18,6 +19,9 @@ const BEE_SVG = `<svg viewBox="-20 -20 40 40"><defs><clipPath id="bee-clip"><ell
 const CURTAIN_SVG = `<svg viewBox="0 0 1440 121" preserveAspectRatio="none"><defs><linearGradient id="curtain-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b46a10"/><stop offset="1" stop-color="#985609"/></linearGradient></defs><path fill="url(#curtain-fill)" d="M0 0H1440V40C1400 40 1395 52 1390 70C1386 86 1372 86 1370 70C1366 50 1350 42 1300 42H1120C1080 42 1076 58 1072 92C1068 114 1048 114 1046 92C1042 58 1030 44 990 44H760C730 44 724 60 721 78C718 96 700 96 698 78C694 58 680 46 640 46H420C380 46 376 64 372 100C369 120 348 120 346 100C342 62 330 48 290 48H140C110 48 104 60 101 74C98 88 82 88 80 74C76 56 60 44 30 44H0Z"/></svg>`;
 
 type Curtain = { el: HTMLElement; covering: boolean; reveal: () => void };
+
+// Lenis' ticker callback, kept so a switch to lite mode can stop smooth scrolling for good.
+let lenisTick: ((time: number) => void) | null = null;
 
 // All scroll and pointer motion lives here. Markup is complete and visible without it:
 // with reduced motion (or no JS) nothing in this file runs and the page is static.
@@ -136,22 +140,26 @@ export function Motion() {
       if (cancelled) return;
       gsap.registerPlugin(ScrollTrigger, SplitText, MotionPathPlugin);
       await document.fonts.ready;
+      const quality = await detectQuality();
       if (cancelled) return;
 
       const root = document.documentElement;
       const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      // lite (weak device or measured stutter, see src/lib/quality.ts): no smooth scroll, still drips, no pointer effects
+      const full = quality === "full";
       const undo: (() => void)[] = [];
       root.classList.add("motion");
       undo.push(() => root.classList.remove("motion"));
 
-      if (fine && !window.__lenis) {
+      if (fine && full && !window.__lenis) {
         // One Lenis for the lifetime of the app. Recreating it per route left a gap in which the page
         // could be scrolled by something else; ScrollManager resets it on navigation instead.
         const { default: Lenis } = await import("lenis");
         if (cancelled) return;
         const lenis = new Lenis({ anchors: true, lerp: 0.11 });
         lenis.on("scroll", ScrollTrigger.update);
-        gsap.ticker.add((time: number) => lenis.raf(time * 1000));
+        lenisTick = (time: number) => lenis.raf(time * 1000);
+        gsap.ticker.add(lenisTick);
         gsap.ticker.lagSmoothing(0);
         window.__lenis = lenis;
       }
@@ -312,11 +320,48 @@ export function Motion() {
 
       // Honey drips animate only while on screen (each frame re-runs their SVG filter).
       const dripIo = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle("is-live", e.isIntersecting)), { rootMargin: "60px 0px" });
-      document.querySelectorAll("[data-drip]").forEach((el) => dripIo.observe(el));
-      undo.push(() => {
+      if (full) document.querySelectorAll("[data-drip]").forEach((el) => dripIo.observe(el));
+      const stopDrips = () => {
         dripIo.disconnect();
         document.querySelectorAll(".is-live").forEach((el) => el.classList.remove("is-live"));
-      });
+      };
+      undo.push(stopDrips);
+
+      // Stutter watch: while scrolling, if more than a fifth of 120 frames take over 34 ms (under 30 fps), switch to lite for the
+      // rest of the visit: drips stop, smooth scroll ends, the 3D honeycomb hands over to its SVG (HoneycombCanvas).
+      const onLite = () => {
+        stopDrips();
+        if (lenisTick) gsap.ticker.remove(lenisTick);
+        lenisTick = null;
+        window.__lenis?.destroy?.();
+        window.__lenis = undefined;
+      };
+      window.addEventListener(LITE_EVENT, onLite);
+      undo.push(() => window.removeEventListener(LITE_EVENT, onLite));
+      if (full) {
+        let scrollingUntil = 0;
+        let frames = 0;
+        let slow = 0;
+        const onScrollWatch = () => (scrollingUntil = performance.now() + 250);
+        const watch = (_t: number, dt: number) => {
+          if (performance.now() > scrollingUntil) return;
+          frames++;
+          if (dt > 34) slow++;
+          if (frames < 120) return;
+          if (slow / frames > 0.2) {
+            gsap.ticker.remove(watch);
+            setQuality("lite");
+          }
+          frames = 0;
+          slow = 0;
+        };
+        window.addEventListener("scroll", onScrollWatch, { passive: true });
+        gsap.ticker.add(watch);
+        undo.push(() => {
+          window.removeEventListener("scroll", onScrollWatch);
+          gsap.ticker.remove(watch);
+        });
+      }
 
       // Bees. One drifts through the hero now and then (over the photo, never more than a few times per visit);
       // tapping the honeycomb lets one out of the cell. The bee turns along its path and never flies upside down.
@@ -528,7 +573,7 @@ export function Motion() {
         });
       }
 
-      if (fine) {
+      if (fine && full) {
         // Hero photo leans a little towards the pointer
         document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((el) => {
           const host = el.closest("section") ?? el;

@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
 
-type LenisLike = { scrollTo: (target: number | HTMLElement, opts?: Record<string, unknown>) => void; resize?: () => void };
+type LenisLike = { scrollTo: (target: number | HTMLElement, opts?: Record<string, unknown>) => void; resize?: () => void; destroy?: () => void };
 declare global {
   interface Window {
     __lenis?: LenisLike;

@@ -240,3 +240,10 @@ A second bug surfaced while fixing this: wrapping rails in a new element made th
   - honey drips: the wide band is a static SVG filtered once; only small per-drip SVGs (80 px) animate, and only while on screen (`is-live` from Motion.tsx); before, the whole 2560 px filtered SVG re-ran its lighting filter every frame;
   - header without `backdrop-blur` (it was 95 % opaque anyway).
   - drips outside a narrow screen are clipped sideways (`overflow-x: clip`), they had widened the page.
+
+### Session 5d (2026-11-18): lighter mode for weak devices
+
+- Tadej: still a little stutter (in dev), could weak computers/phones get fewer effects? Dev mode is far slower than the build; judge in a production build.
+- `src/lib/quality.ts` decides "full" or "lite" once per visit: Save-Data, ≤2 CPU cores or ≤2 GB memory (where the browser tells), else a 30-frame measurement (median over 22 ms → lite). Motion.tsx also watches scrolling: over a fifth of 120 frames slower than 34 ms switches to lite on the spot.
+- Lite: no 3D honeycomb (the SVG comb is already the fallback), drips drawn but still, no Lenis smooth scroll, no photo tilt, magnetic buttons or cursor dot. Bees and the honey page transition stay (transform only, cheap).
+- Checked: CPU throttling ×10 in Chromium still gives 60 fps while scrolling (main thread is light now; the heavy parts were raster/GPU, which throttling does not simulate). Forcing 40 ms frames switches to lite as intended.

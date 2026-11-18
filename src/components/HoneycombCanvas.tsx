@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { detectQuality, LITE_EVENT } from "@/lib/quality";
 
 type Props = { colors: string[]; active: number; onSelect: (index: number) => void };
 
@@ -41,6 +42,8 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
     io.observe(el);
 
     async function init() {
+      // weak device or measured stutter: the SVG comb underneath stays (src/lib/quality.ts)
+      if ((await detectQuality()) === "lite" || disposed) return;
       const THREE = await import("three");
       if (disposed || !el) return;
 
@@ -242,10 +245,18 @@ export function HoneycombCanvas({ colors, active, onSelect }: Props) {
       if (disposed) dispose();
     }
 
-    return () => {
+    // switched to lite while on the page: hand over to the SVG comb
+    const onLite = () => {
       disposed = true;
       io.disconnect();
       dispose?.();
+      dispose = undefined;
+    };
+    window.addEventListener(LITE_EVENT, onLite);
+
+    return () => {
+      window.removeEventListener(LITE_EVENT, onLite);
+      onLite();
     };
   }, [colors]);
 
