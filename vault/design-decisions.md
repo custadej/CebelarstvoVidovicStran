@@ -230,3 +230,13 @@ A second bug surfaced while fixing this: wrapping rails in a new element made th
 - Bees were too frequent: one budget per visit, at least 45 s between ambient bees, max 6. New: a minute of scrolling without any click brings one.
 - Preview opened English in Slovenia (English browser, GitHub Pages has no country): the fallback now uses the device time zone first (Europe/Ljubljana → Slovenian), no outside request.
 - Transition was too fast and looked glitchy: slower (0.7 s in, 0.9 s out, power3.inOut), waits for fonts and the first photo, and the new page's own entrance animations wait until the honey runs off.
+
+### Session 5c (2026-11-18): honey pages, performance
+
+- **Honey page jar:** the jar photos are crops of group shots (lipov 291 px wide, akacijev/kostanjev/cvetlični 398 px), unchanged since 14 Nov; at 380 px on the honey pages they were blurry and so tall that the left column ended in empty space. The honey page now uses the same hex jar visual as the home selector (max 260 px), which Tadej likes. A better fix is new single-jar photos (shot list in [[asset-log]]).
+- **Facts grid:** an odd last fact spans both columns (lipov had an empty cell).
+- **Performance** (scroll over the home page, 221 frames: janky frames over 33 ms went from 36 to 1):
+  - the 3D honeycomb renders only while something moves (scroll fill, hover, tilt, new selection) and sleeps otherwise; before it rendered every frame while visible;
+  - honey drips: the wide band is a static SVG filtered once; only small per-drip SVGs (80 px) animate, and only while on screen (`is-live` from Motion.tsx); before, the whole 2560 px filtered SVG re-ran its lighting filter every frame;
+  - header without `backdrop-blur` (it was 95 % opaque anyway).
+  - drips outside a narrow screen are clipped sideways (`overflow-x: clip`), they had widened the page.

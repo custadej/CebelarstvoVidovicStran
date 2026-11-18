@@ -310,6 +310,14 @@ export function Motion() {
       });
       undo.push(() => ctx.revert());
 
+      // Honey drips animate only while on screen (each frame re-runs their SVG filter).
+      const dripIo = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle("is-live", e.isIntersecting)), { rootMargin: "60px 0px" });
+      document.querySelectorAll("[data-drip]").forEach((el) => dripIo.observe(el));
+      undo.push(() => {
+        dripIo.disconnect();
+        document.querySelectorAll(".is-live").forEach((el) => el.classList.remove("is-live"));
+      });
+
       // Bees. One drifts through the hero now and then (over the photo, never more than a few times per visit);
       // tapping the honeycomb lets one out of the cell. The bee turns along its path and never flies upside down.
       const rand = gsap.utils.random;

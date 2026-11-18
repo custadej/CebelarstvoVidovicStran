@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CallBand, PageHero } from "@/components/PageHero";
 import { Photo } from "@/components/Photo";
-import { HoneyGrid, Packaging } from "@/components/sections/Honeys";
+import { HoneyGrid, JarVisual, Packaging } from "@/components/sections/Honeys";
 import { CallButton, JsonLd, MedalDot } from "@/components/ui";
 import { awardLabel, getContent } from "@/data";
 import type { Lang } from "@/i18n";
@@ -272,8 +272,8 @@ export function HoneyDetail({ lang, slug }: { lang: Lang; slug: string }) {
         <div className="wrap grid gap-12 lg:grid-cols-[1fr_0.8fr] lg:gap-20">
           <div>
             <dl className="grid gap-px overflow-hidden rounded-3xl bg-crta sm:grid-cols-2">
-              {h.facts.map((f) => (
-                <div key={f.label} className="bg-papir p-6" data-reveal="">
+              {h.facts.map((f, i) => (
+                <div key={f.label} className={`bg-papir p-6 ${h.facts.length % 2 && i === h.facts.length - 1 ? "sm:col-span-2" : ""}`} data-reveal="">
                   <dt className="eyebrow">{f.label}</dt>
                   <dd className="h-card mt-2 !text-[1.4rem]">{f.value}</dd>
                 </div>
@@ -307,7 +307,8 @@ export function HoneyDetail({ lang, slug }: { lang: Lang; slug: string }) {
           </div>
           <div>
             <div className="sticky top-28">
-              <Photo slug={h.jar} alt={ui[lang].jarOf(h.name)} sizes="(min-width: 1024px) 380px, 70vw" className="frame mx-auto w-[70%] max-w-[380px] lg:w-full" />
+              {/* the jar photos are crops of group shots (some under 300 px wide), so they stay at the selector's size */}
+              <JarVisual lang={lang} h={h} className="mx-auto aspect-[4/5] w-[62%] max-w-[260px]" />
               <p className="mt-6 text-center">{t.jars}</p>
             </div>
           </div>

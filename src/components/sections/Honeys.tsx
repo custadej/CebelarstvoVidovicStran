@@ -58,7 +58,7 @@ const T = {
 // Light to dark, the way the jars look on the shelf.
 const order = ["akacijev", "cvetlicni", "lipov", "kostanjev", "gozdni", "hojev"];
 
-function JarVisual({ lang, h, className = "" }: { lang: Lang; h: Honey; className?: string }) {
+export function JarVisual({ lang, h, className = "" }: { lang: Lang; h: Honey; className?: string }) {
   return (
     <div className={`relative grid place-items-center ${className}`}>
       <div
